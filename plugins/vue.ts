@@ -2,6 +2,7 @@
  * FrontendRAFT - Vue Plugin
  * 
  * Vue composables for FrontendRAFT.
+ * Note: Requires Vue 3+ to be installed separately.
  * 
  * Based on CSOP: https://github.com/Nexus-Studio-CEO/CSOP
  * 
@@ -10,34 +11,35 @@
  * @date December 27, 2025
  */
 
-import type { Ref } from 'vue';
 import type { FrontendRAFT } from '../core/FrontendRAFT';
 import type { QueryOptions } from '../types';
 
-// Vue imports with fallback
-let ref: any, onMounted: any, onUnmounted: any, watch: any;
+// Type-only imports for Vue (peer dependency)
+type Ref<T> = { value: T };
+type VueModule = {
+  ref: <T>(value: T) => Ref<T>;
+  onMounted: (fn: () => void) => void;
+  onUnmounted: (fn: () => void) => void;
+};
 
-try {
-  const vue = require('vue');
-  ref = vue.ref;
-  onMounted = vue.onMounted;
-  onUnmounted = vue.onUnmounted;
-  watch = vue.watch;
-} catch (e) {
-  // Vue not installed - functions will throw at runtime if used
-  const notInstalled = () => {
-    throw new Error('Vue is not installed. Install with: npm install vue');
-  };
-  ref = notInstalled;
-  onMounted = notInstalled;
-  onUnmounted = notInstalled;
-  watch = notInstalled;
+// Runtime Vue imports with error handling
+function getVue(): VueModule {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require('vue') as VueModule;
+  } catch (e) {
+    throw new Error(
+      'Vue is not installed. Install it with: npm install vue\n' +
+      'FrontendRAFT Vue plugin requires Vue 3+ as a peer dependency.'
+    );
+  }
 }
 
 export function useRAFT(raft: FrontendRAFT) {
-  const ready = ref(false);
+  const vue = getVue();
+  const ready = vue.ref(false);
 
-  onMounted(async () => {
+  vue.onMounted(async () => {
     await raft.init();
     ready.value = true;
   });
@@ -50,9 +52,10 @@ export function useQuery<T>(
   resourceType: string,
   options?: QueryOptions
 ) {
-  const data: Ref<T[]> = ref([]);
-  const loading = ref(true);
-  const error: Ref<Error | null> = ref(null);
+  const vue = getVue();
+  const data = vue.ref<T[]>([]);
+  const loading = vue.ref(true);
+  const error = vue.ref<Error | null>(null);
 
   const fetchData = async () => {
     try {
@@ -67,14 +70,15 @@ export function useQuery<T>(
     }
   };
 
-  onMounted(fetchData);
+  vue.onMounted(fetchData);
 
   return { data, loading, error, refetch: fetchData };
 }
 
 export function useOptimistic<T>(raft: FrontendRAFT, resourceType: string) {
-  const data: Ref<T | null> = ref(null);
-  const pending = ref(false);
+  const vue = getVue();
+  const data = vue.ref<T | null>(null);
+  const pending = vue.ref(false);
 
   const create = async (
     optimisticData: T,
@@ -103,18 +107,19 @@ export function useOptimistic<T>(raft: FrontendRAFT, resourceType: string) {
 }
 
 export function useStream<T>(raft: FrontendRAFT, channel: string) {
-  const messages: Ref<T[]> = ref([]);
-  const connected = ref(false);
+  const vue = getVue();
+  const messages = vue.ref<T[]>([]);
+  const connected = vue.ref(false);
   let subscription: any;
 
-  onMounted(async () => {
+  vue.onMounted(async () => {
     subscription = await raft.stream!.subscribe(channel, (data: T) => {
       messages.value.push(data);
     });
     connected.value = true;
   });
 
-  onUnmounted(() => {
+  vue.onUnmounted(() => {
     if (subscription) {
       subscription.unsubscribe();
       connected.value = false;
@@ -129,10 +134,11 @@ export function useStream<T>(raft: FrontendRAFT, channel: string) {
 }
 
 export function useCache<T>(raft: FrontendRAFT, key: string) {
-  const data: Ref<T | null> = ref(null);
-  const loading = ref(true);
+  const vue = getVue();
+  const data = vue.ref<T | null>(null);
+  const loading = vue.ref(true);
 
-  onMounted(async () => {
+  vue.onMounted(async () => {
     const cached = await raft.cache!.get<T>(key);
     data.value = cached;
     loading.value = false;
