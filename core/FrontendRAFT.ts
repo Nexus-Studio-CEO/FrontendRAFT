@@ -64,23 +64,21 @@ export class FrontendRAFT {
     }
 
     try {
-      // @ts-ignore
+      // @ts-ignore - Dynamic import from CDN
       const { CSOP } = await import('https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/CSOP@v0.1.0/src/csop.js');
-      this.csop = new CSOP();
-      await this.csop.init();
+      
+      const csopInstance = new CSOP();
+      await csopInstance.init();
+      this.csop = csopInstance;
 
-      if (!this.csop) {
-        throw new Error('CSOP initialization failed');
-      }
-
-      this.storage = new StorageLayer(this.csop);
-      this.compute = new ComputeLayer(this.csop);
-      this.auth = new AuthLayer(this.csop, this.storage, this.config.auth);
+      this.storage = new StorageLayer(csopInstance);
+      this.compute = new ComputeLayer(csopInstance);
+      this.auth = new AuthLayer(csopInstance, this.storage, this.config.auth);
       this.router = new Router(this.auth, this.config.rateLimit, this.config.cors);
-      this.p2p = new P2PLayer(this.csop);
-      this.cdn = new CDNClient(this.csop, this.config.cdn);
+      this.p2p = new P2PLayer(csopInstance);
+      this.cdn = new CDNClient(csopInstance, this.config.cdn);
       this.cache = new CacheLayer(this.storage, this.config.cache);
-      this.stream = new StreamManager(this.csop);
+      this.stream = new StreamManager(csopInstance);
       this.batch = new BatchManager(this.router);
       this.optimistic = new OptimisticEngine(this.storage, this.cache);
       this.query = new QueryEngine(this.storage);
