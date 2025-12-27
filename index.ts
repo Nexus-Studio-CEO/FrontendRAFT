@@ -84,6 +84,7 @@ export * as jwt from './utils/jwt';
 export * as crypto from './utils/crypto';
 export * as validation from './utils/validation';
 
-// Plugin exports
-export * as react from './plugins/react';
-export * as vue from './plugins/vue';
+// NOTE: React and Vue plugins are NOT included in main bundle
+// Import them separately if needed:
+// - React: import { useRAFT } from '@frontendraft/core/react'
+// - Vue: import { useRAFT } from '@frontendraft/core/vue'
