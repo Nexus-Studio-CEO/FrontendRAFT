@@ -48,8 +48,8 @@
   },
   "homepage": "https://github.com/Nexus-Studio-CEO/FrontendRAFT#readme",
   "peerDependencies": {
-    "react": "^18.0.0",
-    "vue": "^3.0.0"
+    "react": ">=18.0.0",
+    "vue": ">=3.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
