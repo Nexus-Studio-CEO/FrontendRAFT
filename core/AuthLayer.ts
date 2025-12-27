@@ -124,12 +124,24 @@ export class AuthLayer {
       const payload = this.decodeToken(token);
 
       // Check expiration
-      if (Date.now() > payload.exp) {
+      if (!payload.exp || Date.now() > payload.exp) {
         throw new Error('Token expired');
+      }
+
+      // Verify token signature
+      const [header, payloadPart, signature] = token.split('.');
+      const expectedSignature = this.sign(`${header}.${payloadPart}`);
+      if (signature !== expectedSignature) {
+        throw new Error('Invalid token signature');
       }
 
       // Get user
       const user = await this.storage.get<UserData>(`user:${payload.userId}`);
+      
+      // Additional validation
+      if (!user || !user.id || user.id !== payload.userId) {
+        throw new Error('User not found or token mismatch');
+      }
       
       return user;
     } catch (error) {
