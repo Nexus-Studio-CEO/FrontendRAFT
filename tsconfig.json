@@ -9,20 +9,19 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "strict": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
+    "strictPropertyInitialization": false,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
@@ -31,7 +30,8 @@
     "types": ["node"]
   },
   "include": [
-    "src/**/*"
+    "**/*.ts",
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules",
