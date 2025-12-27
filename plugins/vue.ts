@@ -10,10 +10,29 @@
  * @date December 27, 2025
  */
 
-import { ref, onMounted, onUnmounted, watch } from 'vue';
 import type { Ref } from 'vue';
 import type { FrontendRAFT } from '../core/FrontendRAFT';
 import type { QueryOptions } from '../types';
+
+// Vue imports with fallback
+let ref: any, onMounted: any, onUnmounted: any, watch: any;
+
+try {
+  const vue = require('vue');
+  ref = vue.ref;
+  onMounted = vue.onMounted;
+  onUnmounted = vue.onUnmounted;
+  watch = vue.watch;
+} catch (e) {
+  // Vue not installed - functions will throw at runtime if used
+  const notInstalled = () => {
+    throw new Error('Vue is not installed. Install with: npm install vue');
+  };
+  ref = notInstalled;
+  onMounted = notInstalled;
+  onUnmounted = notInstalled;
+  watch = notInstalled;
+}
 
 export function useRAFT(raft: FrontendRAFT) {
   const ready = ref(false);
