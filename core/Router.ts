@@ -148,7 +148,7 @@ export class Router {
       request.params = this.extractParams(route.path, request.path);
 
       // Execute middleware chain
-      const middlewareChain = [...this.globalMiddleware, ...route.middleware];
+      const middlewareChain = [...this.globalMiddleware, ...(route.middleware || [])];
       let index = 0;
 
       const next = async (): Promise<any> => {
