@@ -52,7 +52,7 @@ export class FrontendRAFT {
       auth: { tokenExpiry: 30 * 24 * 3600000 },
       cache: { enabled: true, defaultTTL: 5 * 60 * 1000, maxSize: 50 * 1024 * 1024 },
       rateLimit: { windowMs: 60000, maxRequests: 100 },
-      cors: { origins: ['*'], methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], credentials: true },
+      cors: { origins: [], methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], credentials: true },
       ...config
     };
   }
