@@ -1,0 +1,81 @@
+{
+  "name": "@frontendraft/core",
+  "version": "0.1.0",
+  "description": "RAFT (Reactive API for Frontend Transformation) - Transform any frontend into a full-featured API server. Based on CSOP.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "raft",
+    "frontend",
+    "backend",
+    "serverless",
+    "offline-first",
+    "real-time",
+    "streaming",
+    "cache",
+    "batch",
+    "optimistic",
+    "graphql",
+    "csop",
+    "indexeddb",
+    "webworkers",
+    "webrtc",
+    "zero-infrastructure"
+  ],
+  "author": {
+    "name": "DAOUDA Abdoul Anzize",
+    "email": "nexusstudio100@gmail.com",
+    "url": "https://github.com/Nexus-Studio-CEO"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT/issues"
+  },
+  "homepage": "https://github.com/Nexus-Studio-CEO/FrontendRAFT#readme",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.45",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
