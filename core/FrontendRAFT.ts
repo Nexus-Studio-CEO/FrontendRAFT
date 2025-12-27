@@ -69,6 +69,10 @@ export class FrontendRAFT {
       this.csop = new CSOP();
       await this.csop.init();
 
+      if (!this.csop) {
+        throw new Error('CSOP initialization failed');
+      }
+
       this.storage = new StorageLayer(this.csop);
       this.compute = new ComputeLayer(this.csop);
       this.auth = new AuthLayer(this.csop, this.storage, this.config.auth);
