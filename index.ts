@@ -87,20 +87,3 @@ export * as validation from './utils/validation';
 // Plugin exports
 export * as react from './plugins/react';
 export * as vue from './plugins/vue';
-
-// Credits
-console.log(`
-╔════════════════════════════════════════════════════════════╗
-║                    FrontendRAFT v0.1.0                     ║
-╠════════════════════════════════════════════════════════════╣
-║  RAFT = Reactive API for Frontend Transformation          ║
-║                                                            ║
-║  Created by: DAOUDA Abdoul Anzize                         ║
-║  Organization: Nexus Studio                               ║
-║                                                            ║
-║  Built on top of CSOP (Client-Side Orchestration)         ║
-║  CSOP: github.com/Nexus-Studio-CEO/CSOP                   ║
-║                                                            ║
-║  FrontendRAFT: github.com/Nexus-Studio-CEO/FrontendRAFT   ║
-╚════════════════════════════════════════════════════════════╝
-`);
