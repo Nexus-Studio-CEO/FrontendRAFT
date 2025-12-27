@@ -58,7 +58,7 @@ export class Router {
       maxRequests: rateLimitConfig?.maxRequests || 100
     };
     this.corsConfig = {
-      origins: corsConfig?.origins || ['*'],
+      origins: corsConfig?.origins || [],
       methods: corsConfig?.methods || ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
       credentials: corsConfig?.credentials ?? true
     };
@@ -282,8 +282,12 @@ export class Router {
    * @private
    */
   private getCORSHeaders(): Record<string, string> {
+    const allowedOrigins = this.corsConfig.origins.length > 0 
+      ? this.corsConfig.origins.join(',')
+      : '*';
+    
     return {
-      'Access-Control-Allow-Origin': this.corsConfig.origins.join(','),
+      'Access-Control-Allow-Origin': allowedOrigins,
       'Access-Control-Allow-Methods': this.corsConfig.methods.join(','),
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Allow-Credentials': this.corsConfig.credentials.toString()
