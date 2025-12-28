@@ -1,0 +1,48 @@
+{
+  "name": "@nexusstudio/frontendraft",
+  "version": "0.1.0",
+  "description": "FrontendRAFT - Reactive API for Frontend Transformation. Based on CSOP (Client-Side Orchestration Protocol)",
+  "main": "src/index.js",
+  "type": "module",
+  "keywords": [
+    "api",
+    "frontend",
+    "raft",
+    "csop",
+    "reactive",
+    "p2p",
+    "decentralized",
+    "offline-first",
+    "real-time"
+  ],
+  "author": {
+    "name": "DAOUDA Abdoul Anzize",
+    "email": "nexusstudio100@gmail.com",
+    "url": "https://github.com/Nexus-Studio-CEO"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT/issues"
+  },
+  "homepage": "https://github.com/Nexus-Studio-CEO/FrontendRAFT#readme",
+  "scripts": {
+    "dev": "echo 'FrontendRAFT v0.1.0 - Development mode'",
+    "build": "python scripts/build-and-publish.py",
+    "test": "echo 'Tests coming in v0.2.0'"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "csop": "^0.2.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
