@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrontendRAFT - Real-Time Chat (Streaming)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.me {
+            text-align: right;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message.me .message-bubble {
+            background: #1e3a8a;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.other .message-bubble {
+            background: white;
+            color: #1e293b;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .message-info {
+            font-size: 0.75em;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .typing-indicator {
+            padding: 10px 20px;
+            color: #64748b;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        .system-message {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9em;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .emoji-btn {
+            padding: 10px 15px;
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .emoji-btn:hover {
+            background: #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 Real-Time Chat</h1>
+            <div class="status">
+                <span class="status-dot"></span>
+                <span id="onlineCount">1 online</span>
+            </div>
+        </div>
+
+        <div class="messages" id="messages">
+            <div class="system-message">
+                Welcome! This chat uses FrontendRAFT Streaming API for real-time messaging.
+            </div>
+        </div>
+
+        <div id="typingIndicator" class="typing-indicator" style="display: none;">
+            Someone is typing...
+        </div>
+
+        <div class="input-area">
+            <button class="emoji-btn" onclick="addEmoji('👋')">👋</button>
+            <button class="emoji-btn" onclick="addEmoji('❤️')">❤️</button>
+            <button class="emoji-btn" onclick="addEmoji('😊')">😊</button>
+            <input 
+                type="text" 
+                id="messageInput" 
+                placeholder="Type a message..."
+                onkeypress="if(event.key==='Enter') sendMessage()"
+                oninput="handleTyping()"
+            >
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { FrontendRAFT } from 'https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/FrontendRAFT@v0.1.0/src/index.js';
+
+        // Initialize RAFT
+        const raft = new FrontendRAFT({
+            name: 'Real-Time Chat',
+            version: '1.0.0'
+        });
+
+        await raft.init();
+
+        // Generate user ID
+        const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+        const userName = `User${Math.floor(Math.random() * 1000)}`;
+
+        console.log('Your user ID:', userId);
+        console.log('Your user name:', userName);
+
+        // Subscribe to chat stream
+        const stream = raft.stream.open('/chat:room1');
+
+        let messageCount = 0;
+
+        (async () => {
+            for await (const event of stream) {
+                if (event.type === 'message') {
+                    displayMessage(event.data);
+                    messageCount++;
+                } else if (event.type === 'typing') {
+                    showTypingIndicator(event.data.userName);
+                } else if (event.type === 'user_joined') {
+                    displaySystemMessage(`${event.data.userName} joined the chat`);
+                } else if (event.type === 'user_left') {
+                    displaySystemMessage(`${event.data.userName} left the chat`);
+                }
+            }
+        })();
+
+        // Send join notification
+        await raft.stream.broadcast('/chat:room1', {
+            type: 'user_joined',
+            data: { userId, userName, timestamp: Date.now() }
+        });
+
+        // Send message
+        window.sendMessage = async function() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const message = {
+                type: 'message',
+                data: {
+                    userId,
+                    userName,
+                    text,
+                    timestamp: Date.now()
+                }
+            };
+
+            // Broadcast to all users
+            await raft.stream.broadcast('/chat:room1', message);
+            
+            input.value = '';
+        };
+
+        // Display message
+        function displayMessage(data) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${data.userId === userId ? 'me' : 'other'}`;
+            
+            const time = new Date(data.timestamp).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            messageDiv.innerHTML = `
+                <div class="message-bubble">
+                    ${data.text}
+                </div>
+                <div class="message-info">
+                    ${data.userId === userId ? 'You' : data.userName} • ${time}
+                </div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Display system message
+        function displaySystemMessage(text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'system-message';
+            messageDiv.textContent = text;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Handle typing indicator
+        let typingTimeout;
+        window.handleTyping = async function() {
+            clearTimeout(typingTimeout);
+            
+            await raft.stream.broadcast('/chat:room1', {
+                type: 'typing',
+                data: { userId, userName }
+            });
+            
+            typingTimeout = setTimeout(() => {
+                hideTypingIndicator();
+            }, 1000);
+        };
+
+        function showTypingIndicator(userName) {
+            if (userName === userName) return; // Don't show for self
+            
+            const indicator = document.getElementById('typingIndicator');
+            indicator.textContent = `${userName} is typing...`;
+            indicator.style.display = 'block';
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+            }, 3000);
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        // Add emoji
+        window.addEmoji = function(emoji) {
+            const input = document.getElementById('messageInput');
+            input.value += emoji;
+            input.focus();
+        };
+
+        // Track presence
+        setInterval(async () => {
+            const presence = await raft.p2p.presence('/chat:room1');
+            // Note: Presence tracking would need Supabase configured
+            // For demo, we show static count
+        }, 10000);
+
+        // Handle page unload
+        window.addEventListener('beforeunload', async () => {
+            await raft.stream.broadcast('/chat:room1', {
+                type: 'user_left',
+                data: { userId, userName, timestamp: Date.now() }
+            });
+        });
+
+        console.log('✅ Real-Time Chat ready!');
+        console.log('Open this page in multiple tabs to test real-time sync!');
+        console.log('Messages:', messageCount);
+    </script>
+</body>
+</html>
