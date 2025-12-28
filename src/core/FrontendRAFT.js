@@ -131,7 +131,7 @@ export class FrontendRAFT {
   async _loadCSOP() {
     try {
       // Import CSOP from CDN
-      const module = await import('https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/csop@v0.2.0/src/csop.js');
+      const module = await import('https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/CSOP@main/src/csop.js');
       const { CSOP } = module;
       
       this.csop = new CSOP();

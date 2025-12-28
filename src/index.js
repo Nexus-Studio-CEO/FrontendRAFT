@@ -49,7 +49,7 @@ export { validate, validateEmail, validateToken } from './utils/validation.js';
  * 
  * Learn more about CSOP:
  * - GitHub: https://github.com/Nexus-Studio-CEO/CSOP
- * - CDN: https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/csop@v0.2.0/src/csop.js
+ * - CDN: https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/CSOP@main/src/csop.js
  * - Author: DAOUDA Abdoul Anzize (nexusstudio100@gmail.com)
  * 
  * FrontendRAFT extends CSOP with RAFT Protocol features:

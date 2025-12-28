@@ -486,7 +486,7 @@ const users = await raft.get('/api/users', { cache: true });
 **FrontendRAFT is built on CSOP** (Client-Side Orchestration Protocol)
 
 - **CSOP GitHub**: https://github.com/Nexus-Studio-CEO/CSOP
-- **CSOP CDN**: https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/csop@v0.2.0/src/csop.js
+- **CSOP CDN**: https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/CSOP@main/src/csop.js
 - **Author**: DAOUDA Abdoul Anzize - Nexus Studio
 
 ---
