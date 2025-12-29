@@ -1,24 +1,46 @@
 {
   "name": "@nexusstudio/frontendraft",
   "version": "0.1.0",
-  "description": "FrontendRAFT - Reactive API for Frontend Transformation. Based on CSOP (Client-Side Orchestration Protocol)",
+  "description": "Transform browsers into API servers with RAFT protocol - Based on CSOP",
   "main": "src/index.js",
   "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./react": "./src/plugins/react.jsx",
+    "./vue": "./src/plugins/vue.js",
+    "./utils": "./src/utils/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Testing with build-and-publish.py\" && python3 scripts/build-and-publish.py --test-only",
+    "build": "python3 scripts/build-and-publish.py --build-only",
+    "publish:cdn": "python3 scripts/build-and-publish.py --publish",
+    "dev": "python3 -m http.server 8000",
+    "lint": "echo \"Linting disabled - Pure JS\"",
+    "docs": "echo \"Documentation in /docs folder\""
+  },
   "keywords": [
     "api",
-    "frontend",
     "raft",
+    "frontend",
+    "browser",
+    "serverless",
     "csop",
-    "reactive",
-    "p2p",
-    "decentralized",
+    "streaming",
+    "caching",
+    "batching",
+    "optimistic",
+    "query-language",
+    "rest",
+    "graphql",
+    "realtime",
     "offline-first",
-    "real-time"
+    "p2p",
+    "webrtc"
   ],
   "author": {
     "name": "DAOUDA Abdoul Anzize",
     "email": "nexusstudio100@gmail.com",
-    "url": "https://github.com/Nexus-Studio-CEO"
+    "company": "Nexus Studio"
   },
   "license": "MIT",
   "repository": {
@@ -29,20 +51,46 @@
     "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT/issues"
   },
   "homepage": "https://github.com/Nexus-Studio-CEO/FrontendRAFT#readme",
-  "scripts": {
-    "dev": "echo 'FrontendRAFT v0.1.0 - Development mode'",
-    "build": "python scripts/build-and-publish.py",
-    "test": "echo 'Tests coming in v0.2.0'"
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "vue": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
   },
   "dependencies": {},
-  "peerDependencies": {
-    "csop": "^0.2.0"
-  },
   "devDependencies": {},
-  "engines": {
-    "node": ">=16.0.0"
+  "files": [
+    "src/",
+    "docs/",
+    "examples/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "cdn": {
+    "jsdelivr": "https://cdn.jsdelivr.net/gh/Nexus-Studio-CEO/FrontendRAFT@main/src/index.js",
+    "unpkg": "https://unpkg.com/@nexusstudio/frontendraft@0.1.0/src/index.js"
   },
-  "publishConfig": {
-    "access": "public"
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/Nexus-Studio-CEO"
+  },
+  "credits": {
+    "csop": {
+      "name": "CSOP (Client-Side Orchestration Protocol)",
+      "version": "main",
+      "url": "https://github.com/Nexus-Studio-CEO/CSOP",
+      "author": "DAOUDA Abdoul Anzize"
+    }
   }
 }
