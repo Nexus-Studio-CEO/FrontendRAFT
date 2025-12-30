@@ -6,6 +6,10 @@ Turn browsers into API servers with zero infrastructure cost. FrontendRAFT exten
 
 **Inspired by [CSOP](https://github.com/Nexus-Studio-CEO/CSOP)** (Client-Side Orchestration Protocol)
 
+[![npm version](https://img.shields.io/npm/v/@tryboy869/frontendraft.svg)](https://www.npmjs.com/package/@tryboy869/frontendraft)
+[![GitHub release](https://img.shields.io/github/v/release/Nexus-Studio-CEO/FrontendRAFT.svg)](https://github.com/Nexus-Studio-CEO/FrontendRAFT/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ---
 
 ## 📋 Table of Contents
@@ -82,20 +86,91 @@ const filtered = raft.queryData(data, {
 
 ## 📦 Installation
 
-### NPM
+### Method 1: NPM (Recommended)
+
 ```bash
-npm install @nexusstudio/frontendraft
+npm install @tryboy869/frontendraft
 ```
 
-### Yarn
 ```bash
-yarn add @nexusstudio/frontendraft
+yarn add @tryboy869/frontendraft
 ```
 
-### CDN (Browser)
+```bash
+pnpm add @tryboy869/frontendraft
+```
+
+---
+
+### Method 2: GitHub Packages
+
+```bash
+# Configure npm to use GitHub Packages
+echo "@Nexus-Studio-CEO:registry=https://npm.pkg.github.com" >> .npmrc
+
+# Install from GitHub
+npm install @Nexus-Studio-CEO/frontendraft
+```
+
+Or download directly from [GitHub Releases](https://github.com/Nexus-Studio-CEO/FrontendRAFT/releases)
+
+---
+
+### Method 3: CDN (jsDelivr)
+
 ```html
 <script type="module">
-  import { FrontendRAFT } from 'https://cdn.jsdelivr.net/npm/@nexusstudio/frontendraft@0.1.0/dist/index.js';
+  import { FrontendRAFT } from 'https://cdn.jsdelivr.net/npm/@tryboy869/frontendraft@0.1.2/dist/index.js';
+  
+  const raft = new FrontendRAFT({ name: 'My API' });
+  await raft.init();
+</script>
+```
+
+**Specific version:**
+```html
+https://cdn.jsdelivr.net/npm/@tryboy869/frontendraft@0.1.2/dist/index.js
+```
+
+**Latest version:**
+```html
+https://cdn.jsdelivr.net/npm/@tryboy869/frontendraft@latest/dist/index.js
+```
+
+---
+
+### Method 4: unpkg CDN
+
+```html
+<script type="module">
+  import { FrontendRAFT } from 'https://unpkg.com/@tryboy869/frontendraft@0.1.2/dist/index.js';
+  
+  const raft = new FrontendRAFT({ name: 'My API' });
+  await raft.init();
+</script>
+```
+
+**Specific version:**
+```html
+https://unpkg.com/@tryboy869/frontendraft@0.1.2/dist/index.js
+```
+
+**Latest version:**
+```html
+https://unpkg.com/@tryboy869/frontendraft@latest/dist/index.js
+```
+
+---
+
+### Method 5: Direct Download
+
+Download the latest release:
+- [GitHub Releases](https://github.com/Nexus-Studio-CEO/FrontendRAFT/releases/latest)
+- [NPM Package](https://www.npmjs.com/package/@tryboy869/frontendraft)
+
+```html
+<script type="module">
+  import { FrontendRAFT } from './path/to/frontendraft/dist/index.js';
 </script>
 ```
 
@@ -106,7 +181,7 @@ yarn add @nexusstudio/frontendraft
 ### Basic Setup
 
 ```javascript
-import { FrontendRAFT } from '@nexusstudio/frontendraft';
+import { FrontendRAFT } from '@tryboy869/frontendraft';
 
 // Create instance
 const raft = new FrontendRAFT({
@@ -233,7 +308,7 @@ raft.p2p.broadcast({ type: 'update', data: {...} });
 
 ## 📚 API Reference
 
-See [RAFT_PROTOCOL.md](./RAFT_PROTOCOL.md) for complete protocol specification.
+See [RAFT_PROTOCOL.md](./docs/RAFT_PROTOCOL.md) for complete protocol specification.
 
 ### Main Class: FrontendRAFT
 
@@ -424,13 +499,13 @@ const result = await raft.optimisticUpdate(
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for guidelines.
 
 ---
 
 ## 📄 License
 
-MIT License - see [LICENSE](../LICENSE)
+MIT License - see [LICENSE](./LICENSE)
 
 ---
 
@@ -441,9 +516,31 @@ MIT License - see [LICENSE](../LICENSE)
 **Inspired by:** [CSOP](https://github.com/Nexus-Studio-CEO/CSOP) - Client-Side Orchestration Protocol
 
 **Learn more:**
-- 📖 CSOP: https://github.com/Nexus-Studio-CEO/CSOP
-- 📖 RAFT Protocol: [RAFT_PROTOCOL.md](./RAFT_PROTOCOL.md)
-- 📖 Roadmap: [ROADMAP.md](./ROADMAP.md)
+- 📖 **GitHub:** https://github.com/Nexus-Studio-CEO/FrontendRAFT
+- 📖 **NPM:** https://www.npmjs.com/package/@tryboy869/frontendraft
+- 📖 **GitHub Packages:** https://github.com/Nexus-Studio-CEO/FrontendRAFT/packages
+- 📖 **RAFT Protocol:** [docs/RAFT_PROTOCOL.md](./docs/RAFT_PROTOCOL.md)
+- 📖 **Roadmap:** [docs/ROADMAP.md](./docs/ROADMAP.md)
+- 📖 **CSOP:** https://github.com/Nexus-Studio-CEO/CSOP
+
+---
+
+## 🔗 Quick Links
+
+### Installation
+- [NPM Package](https://www.npmjs.com/package/@tryboy869/frontendraft)
+- [GitHub Releases](https://github.com/Nexus-Studio-CEO/FrontendRAFT/releases)
+- [GitHub Packages](https://github.com/Nexus-Studio-CEO?tab=packages)
+
+### CDN Links
+- [jsDelivr](https://cdn.jsdelivr.net/npm/@tryboy869/frontendraft@latest/dist/index.js)
+- [unpkg](https://unpkg.com/@tryboy869/frontendraft@latest/dist/index.js)
+
+### Documentation
+- [Quick Start Guide](./docs/README.md)
+- [RAFT Protocol](./docs/RAFT_PROTOCOL.md)
+- [Contributing Guide](./docs/CONTRIBUTING.md)
+- [Roadmap](./docs/ROADMAP.md)
 
 ---
 
