@@ -1,0 +1,46 @@
+{
+  "name": "@nexusstudio/frontendraft",
+  "version": "0.1.0",
+  "description": "RAFT (Reactive API for Frontend Transformation) - Turn browsers into API servers. Inspired by CSOP.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node scripts/test.js",
+    "dev": "node scripts/dev.js",
+    "publish:all": "node scripts/build-and-publish.js"
+  },
+  "keywords": [
+    "api",
+    "frontend",
+    "raft",
+    "reactive",
+    "p2p",
+    "decentralized",
+    "csop",
+    "browser-server",
+    "offline-first"
+  ],
+  "author": "DAOUDA Abdoul Anzize <nexusstudio100@gmail.com> (Nexus Studio)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT/issues"
+  },
+  "homepage": "https://github.com/Nexus-Studio-CEO/FrontendRAFT#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "esbuild": "^0.19.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
