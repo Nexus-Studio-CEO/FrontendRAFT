@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrontendRAFT - Debug</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+        .info { color: #60a5fa; }
+        pre {
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 FrontendRAFT Debug Console</h1>
+    
+    <div class="section">
+        <h2>1. Script Loading Test</h2>
+        <div id="script-status">Testing...</div>
+        <button onclick="testScripts()">Re-test Scripts</button>
+    </div>
+    
+    <div class="section">
+        <h2>2. Global Objects Check</h2>
+        <div id="globals-status">Testing...</div>
+        <button onclick="testGlobals()">Re-test Globals</button>
+    </div>
+    
+    <div class="section">
+        <h2>3. IndexedDB Test</h2>
+        <div id="db-status">Testing...</div>
+        <button onclick="testDB()">Re-test DB</button>
+    </div>
+    
+    <div class="section">
+        <h2>4. Logger Test</h2>
+        <div id="logger-status">Testing...</div>
+        <button onclick="testLogger()">Re-test Logger</button>
+    </div>
+    
+    <div class="section">
+        <h2>5. Console Output</h2>
+        <pre id="console-output"></pre>
+        <button onclick="clearConsole()">Clear</button>
+    </div>
+    
+    <script>
+        const output = document.getElementById('console-output');
+        
+        // Intercept console
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        console.log = function(...args) {
+            output.textContent += '[LOG] ' + args.join(' ') + '\n';
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            output.textContent += '[ERROR] ' + args.join(' ') + '\n';
+            originalError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            output.textContent += '[WARN] ' + args.join(' ') + '\n';
+            originalWarn.apply(console, args);
+        };
+        
+        function clearConsole() {
+            output.textContent = '';
+        }
+        
+        function testScripts() {
+            const status = document.getElementById('script-status');
+            let html = '<h3>Required Scripts:</h3>';
+            
+            const scripts = [
+                'Helpers',
+                'Validation',
+                'StreamManager',
+                'CacheLayer',
+                'BatchManager',
+                'OptimisticEngine',
+                'QueryEngine',
+                'AuthLayer',
+                'Router',
+                'P2PLayer',
+                'CDNClient',
+                'UserProjects',
+                'APIBuilder',
+                'RAFT'
+            ];
+            
+            scripts.forEach(name => {
+                const exists = window[name] !== undefined;
+                html += `<div class="${exists ? 'success' : 'error'}">
+                    ${exists ? '✅' : '❌'} ${name}
+                </div>`;
+            });
+            
+            status.innerHTML = html;
+        }
+        
+        function testGlobals() {
+            const status = document.getElementById('globals-status');
+            let html = '<h3>Global Objects:</h3><pre>';
+            
+            const globals = Object.keys(window).filter(key => 
+                key.includes('RAFT') || 
+                key.includes('Manager') || 
+                key.includes('Layer') || 
+                key.includes('Engine')
+            );
+            
+            html += JSON.stringify(globals, null, 2);
+            html += '</pre>';
+            
+            status.innerHTML = html;
+        }
+        
+        async function testDB() {
+            const status = document.getElementById('db-status');
+            
+            try {
+                const request = indexedDB.open('TestDB', 1);
+                
+                request.onsuccess = () => {
+                    status.innerHTML = '<div class="success">✅ IndexedDB is available</div>';
+                    request.result.close();
+                    indexedDB.deleteDatabase('TestDB');
+                };
+                
+                request.onerror = () => {
+                    status.innerHTML = '<div class="error">❌ IndexedDB failed: ' + request.error + '</div>';
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    db.createObjectStore('test');
+                };
+                
+            } catch (error) {
+                status.innerHTML = '<div class="error">❌ IndexedDB error: ' + error.message + '</div>';
+            }
+        }
+        
+        function testLogger() {
+            const status = document.getElementById('logger-status');
+            
+            if (!window.Logger) {
+                status.innerHTML = '<div class="error">❌ Logger not found</div>';
+                return;
+            }
+            
+            try {
+                Logger.info('Test message');
+                Logger.success('Logger is working!');
+                
+                const logs = Logger.getLogs();
+                status.innerHTML = `
+                    <div class="success">✅ Logger is working</div>
+                    <div class="info">Total logs: ${logs.length}</div>
+                `;
+            } catch (error) {
+                status.innerHTML = '<div class="error">❌ Logger error: ' + error.message + '</div>';
+            }
+        }
+        
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            console.log('Debug page loaded');
+            testScripts();
+            testGlobals();
+            testDB();
+            testLogger();
+        });
+    </script>
+</body>
+</html>
