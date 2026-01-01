@@ -261,9 +261,135 @@
         </div>
     </main>
 
-    <!-- Core Scripts -->
+    <!-- Core Scripts - ORDER MATTERS -->
+    <!-- 1. Logger FIRST (all components depend on it) -->
+    <script>
+        // Initialize Logger immediately
+        class Logger {
+            constructor() {
+                this.logs = [];
+                this.maxLogs = 500;
+                this.listeners = new Set();
+                this.levels = {
+                    DEBUG: { color: 'text-slate-400', icon: '🐛' },
+                    INFO: { color: 'text-blue-400', icon: 'ℹ️' },
+                    WARN: { color: 'text-yellow-400', icon: '⚠️' },
+                    ERROR: { color: 'text-red-400', icon: '❌' },
+                    SUCCESS: { color: 'text-green-400', icon: '✅' }
+                };
+            }
+            
+            _log(level, message, data = null) {
+                const entry = {
+                    id: Date.now() + Math.random(),
+                    level,
+                    message,
+                    data,
+                    timestamp: new Date().toISOString(),
+                    time: new Date().toLocaleTimeString()
+                };
+                
+                this.logs.push(entry);
+                if (this.logs.length > this.maxLogs) this.logs.shift();
+                
+                this.listeners.forEach(listener => {
+                    try { listener(entry); } catch (e) { console.error('Listener error', e); }
+                });
+                
+                const consoleFn = level === 'ERROR' ? console.error : level === 'WARN' ? console.warn : console.log;
+                consoleFn(`[${entry.time}] [${level}] ${message}`, data || '');
+                
+                this._updateUI(entry);
+            }
+            
+            debug(msg, data) { this._log('DEBUG', msg, data); }
+            info(msg, data) { this._log('INFO', msg, data); }
+            warn(msg, data) { this._log('WARN', msg, data); }
+            error(msg, data) { this._log('ERROR', msg, data); }
+            success(msg, data) { this._log('SUCCESS', msg, data); }
+            
+            subscribe(cb) {
+                this.listeners.add(cb);
+                return () => this.listeners.delete(cb);
+            }
+            
+            getLogs(filter = {}) {
+                let filtered = [...this.logs];
+                if (filter.level) filtered = filtered.filter(log => log.level === filter.level);
+                if (filter.search) {
+                    const searchLower = filter.search.toLowerCase();
+                    filtered = filtered.filter(log => log.message.toLowerCase().includes(searchLower));
+                }
+                return filtered;
+            }
+            
+            clear() {
+                this.logs = [];
+                this._updateUI();
+                console.clear();
+            }
+            
+            _updateUI(newEntry = null) {
+                const container = document.getElementById('logs-container');
+                if (!container) return;
+                
+                if (newEntry) {
+                    const logElement = this._createLogElement(newEntry);
+                    container.appendChild(logElement);
+                    container.scrollTop = container.scrollHeight;
+                    
+                    while (container.children.length > 100) {
+                        container.removeChild(container.firstChild);
+                    }
+                } else {
+                    container.innerHTML = '';
+                    this.logs.slice(-100).forEach(log => {
+                        container.appendChild(this._createLogElement(log));
+                    });
+                }
+            }
+            
+            _createLogElement(log) {
+                const div = document.createElement('div');
+                div.className = 'flex gap-2 text-xs hover:bg-slate-800/50 p-1 rounded';
+                const levelConfig = this.levels[log.level] || this.levels.INFO;
+                div.innerHTML = `
+                    <span class="text-slate-600 w-16 shrink-0">${log.time}</span>
+                    <span class="w-4 shrink-0">${levelConfig.icon}</span>
+                    <span class="${levelConfig.color} w-16 shrink-0">${log.level}</span>
+                    <span class="text-slate-300 flex-1">${this._escapeHtml(log.message)}</span>
+                `;
+                if (log.data) div.title = JSON.stringify(log.data, null, 2);
+                return div;
+            }
+            
+            _escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            time(label) {
+                const startTime = performance.now();
+                return {
+                    end: () => {
+                        const duration = performance.now() - startTime;
+                        this.info(`${label}: ${duration.toFixed(2)}ms`);
+                        return duration;
+                    }
+                };
+            }
+        }
+        
+        window.Logger = new Logger();
+        console.log('✅ Logger initialized');
+    </script>
+    
+    <!-- 2. Utilities -->
     <script src="assets/utils/helpers.js"></script>
     <script src="assets/utils/validation.js"></script>
+    
+    <!-- 3. Core Components -->
     <script src="assets/core/streaming.js"></script>
     <script src="assets/core/caching.js"></script>
     <script src="assets/core/batching.js"></script>
@@ -273,11 +399,13 @@
     <script src="assets/core/router.js"></script>
     <script src="assets/core/p2p.js"></script>
     <script src="assets/core/cdn-client.js"></script>
-    <script src="assets/platform/logger.js"></script>
+    
+    <!-- 4. Platform Components -->
     <script src="assets/platform/user-projects.js"></script>
     <script src="assets/platform/api-builder.js"></script>
     <script src="assets/platform/deploy-manager.js"></script>
     
+    <!-- 5. UI Logic -->
     <script>
         let currentLevel = 1;
         
@@ -330,8 +458,26 @@
             document.getElementById(`view-${viewName}`).classList.remove('hidden');
         }
         
-        document.addEventListener('DOMContentLoaded', () => {
-            RAFT.init();
+        // Initialize on DOM ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                Logger.success('🚀 FrontendRAFT Platform Loading...');
+                Logger.info('RAFT Protocol v0.1.0');
+                Logger.info('Based on CSOP: https://github.com/Nexus-Studio-CEO/CSOP');
+                
+                // Initialize cache
+                await CacheLayer.init();
+                Logger.success('✅ Cache Layer initialized');
+                
+                // Initialize RAFT
+                await RAFT.init();
+                Logger.success('✅ RAFT Platform initialized');
+                Logger.success('🎉 Ready to build APIs!');
+                
+            } catch (error) {
+                Logger.error('Initialization failed: ' + error.message);
+                console.error('Full error:', error);
+            }
         });
     </script>
 </body>
