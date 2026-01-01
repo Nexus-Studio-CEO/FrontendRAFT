@@ -1,302 +1,1044 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FrontendRAFT - Reactive API for Frontend Transformation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FrontendRAFT - Reactive API Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Fira Code', 'monospace'],
-                    },
-                    colors: {
-                        primary: { DEFAULT: '#6366f1', hover: '#4f46e5' },
-                        secondary: { DEFAULT: '#8b5cf6', hover: '#7c3aed' },
-                        success: '#10b981',
-                        warning: '#f59e0b',
-                        error: '#ef4444',
-                        surface: '#1e293b',
-                        background: '#0f172a',
-                        text: '#f1f5f9'
-                    }
-                }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg: #0a0f1e;
+            --bg-elevated: #131827;
+            --bg-card: #1a1f35;
+            --border: #2d3548;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .topbar {
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+        
+        .logo-icon {
+            color: var(--primary);
+        }
+        
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.625rem;
+            font-weight: 600;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-value {
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: var(--bg-elevated);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .sidebar-nav {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            border-radius: 0.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+        
+        .nav-item.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .projects-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0 0.25rem;
+        }
+        
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .btn-icon:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .project-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+        
+        .project-item:hover {
+            background: var(--bg-elevated);
+            border-color: var(--primary);
+        }
+        
+        .project-item.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            flex-shrink: 0;
+        }
+        
+        .project-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .project-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .project-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.125rem;
+        }
+        
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .content-header {
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .tab {
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tab:hover {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-elevated);
+        }
+        
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1.5rem;
+        }
+        
+        .view {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        .level-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+            background: var(--bg-card);
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+        }
+        
+        .level-btn {
+            padding: 0.625rem 1.25rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .level-btn:hover {
+            color: var(--text);
+        }
+        
+        .level-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.625rem 0.875rem;
+            color: var(--text);
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .endpoints-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .endpoint-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .endpoint-item:hover {
+            border-color: var(--primary);
+        }
+        
+        .method-badge {
+            padding: 0.25rem 0.625rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .method-get { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .method-post { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .method-put { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .method-delete { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+        
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .endpoint-desc {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            flex: 1;
+        }
+        
+        .endpoint-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .schema-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .schema-field {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+        }
+        
+        .field-input {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .field-type {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            color: var(--secondary);
+            font-size: 0.875rem;
+        }
+        
+        .code-editor {
+            background: #1e1e1e;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .code-editor.active {
+            display: block;
+        }
+        
+        .code-header {
+            background: #252526;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code-filename {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: #cccccc;
+        }
+        
+        .code-content {
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #d4d4d4;
+            height: 400px;
+            overflow: auto;
+        }
+        
+        .code-textarea {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            outline: none;
+            resize: none;
+        }
+        
+        .logs-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .log-entry {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .log-icon {
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+        
+        .log-info { color: #3b82f6; }
+        .log-success { color: var(--success); }
+        .log-warning { color: var(--warning); }
+        .log-error { color: var(--error); }
+        
+        .log-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .log-time {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .log-message {
+            color: var(--text);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        .deploy-modal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+        
+        .deploy-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .deploy-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .deploy-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .deploy-desc {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        
+        .deploy-input-group {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .deploy-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .deploy-url-input {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .deploy-prefix {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        
+        .deploy-result {
+            display: none;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .deploy-result.active {
+            display: block;
+        }
+        
+        .result-item {
+            margin-bottom: 1rem;
+        }
+        
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .result-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-value {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-elevated);
+            border-radius: 0.375rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            word-break: break-all;
+        }
+        
+        .result-value.success { color: var(--success); }
+        .result-value.warning { color: var(--warning); }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                z-index: 200;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .stats {
+                display: none;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .endpoint-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .endpoint-actions {
+                width: 100%;
+                justify-content: flex-end;
             }
         }
-    </script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <style>
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-        .monaco-line-number { color: #475569; padding-right: 16px; text-align: right; user-select: none; }
-        .code-keyword { color: #c084fc; }
-        .code-function { color: #60a5fa; }
-        .code-string { color: #34d399; }
-        .log-entry { animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .material-icons {
+            font-size: 20px;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 150;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
     </style>
 </head>
-<body class="bg-background text-text antialiased min-h-screen flex flex-col overflow-hidden">
-
-    <div class="fixed top-0 left-0 w-full z-50 bg-black text-white p-2 text-xs flex justify-between items-center border-b border-gray-700">
-        <div class="font-bold flex items-center gap-2">
-            <span>⚡ FrontendRAFT</span>
-            <span class="bg-primary px-2 py-0.5 rounded-full text-[10px]">v0.1.0</span>
-            <span class="text-gray-500">Inspired by CSOP</span>
+<body>
+    <div class="topbar">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="btn-icon" id="menuBtn" style="display: none;">
+                <span class="material-icons">menu</span>
+            </button>
+            <div class="logo">
+                <span class="material-icons logo-icon">bolt</span>
+                <span>FrontendRAFT</span>
+                <span class="badge">v0.1.0</span>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Inspired by CSOP</span>
         </div>
-        <div class="flex gap-4">
-            <span class="text-slate-400">APIs: <span id="api-count" class="text-white">0</span></span>
-            <span class="text-slate-400">Deployed: <span id="deployed-count" class="text-success">0</span></span>
+        <div class="stats">
+            <div class="stat-item">
+                <span class="material-icons" style="font-size: 18px;">api</span>
+                <span>APIs: <span class="stat-value" id="apiCount">0</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="material-icons" style="font-size: 18px;">cloud_done</span>
+                <span>Deployed: <span class="stat-value" id="deployedCount">0</span></span>
+            </div>
         </div>
     </div>
 
-    <div id="app-container" class="flex-1 flex pt-8 h-screen relative overflow-hidden">
-        
-        <aside id="sidebar" class="w-64 bg-surface border-r border-slate-700 flex flex-col fixed md:relative z-40 h-full transition-transform transform -translate-x-full md:translate-x-0 pt-4 overflow-y-auto" style="-webkit-overflow-scrolling: touch;">
-            <div class="px-6 mb-8 flex items-center gap-2">
-                <i class="ph-fill ph-lightning text-primary text-2xl"></i>
-                <h1 class="font-bold text-lg tracking-tight">FrontendRAFT</h1>
+    <div class="main-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-nav">
+                <div class="nav-item active" data-view="builder">
+                    <span class="material-icons">grid_view</span>
+                    <span>API Builder</span>
+                </div>
+                <div class="nav-item" data-view="logs">
+                    <span class="material-icons">terminal</span>
+                    <span>Debug Logs</span>
+                </div>
+                <div class="nav-item" onclick="showDocs()">
+                    <span class="material-icons">menu_book</span>
+                    <span>Documentation</span>
+                </div>
             </div>
 
-            <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
-                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">Platform</div>
-                <a href="#" onclick="setView('builder'); return false;" class="flex items-center gap-3 px-3 py-2 bg-slate-700/50 text-primary rounded-md text-sm font-medium border-l-2 border-primary">
-                    <i class="ph ph-squares-four text-lg"></i>
-                    My APIs
-                </a>
-                <a href="#" onclick="setView('logs'); return false;" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md text-sm font-medium transition-colors">
-                    <i class="ph ph-terminal text-lg"></i>
-                    Debug Logs
-                </a>
-                <a href="#" onclick="showDocs(); return false;" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md text-sm font-medium transition-colors">
-                    <i class="ph ph-book text-lg"></i>
-                    Docs
-                </a>
-
-                <div class="mt-8 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2 flex justify-between items-center">
-                    <span>Projects</span>
-                    <button onclick="createNewAPI()" class="text-primary hover:text-white transition"><i class="ph-bold ph-plus"></i></button>
+            <div class="projects-section">
+                <div class="section-header">
+                    <div class="section-title">Projects</div>
+                    <button class="btn-icon" onclick="createNewAPI()">
+                        <span class="material-icons">add</span>
+                    </button>
                 </div>
-                
-                <div id="projects-list"></div>
-            </nav>
-
-            <div class="p-4 border-t border-slate-700">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-bold text-xs">DA</div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium truncate">Dev User</p>
-                        <p class="text-xs text-slate-500 truncate">Free Plan</p>
-                    </div>
-                </div>
+                <div id="projectsList"></div>
             </div>
         </aside>
 
-        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
+        <div class="overlay" id="overlay"></div>
 
-        <main class="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
-            
-            <header class="h-14 border-b border-slate-700 bg-background/95 backdrop-blur flex items-center justify-between px-4 sticky top-0 z-20">
-                <div class="flex items-center gap-4">
-                    <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">
-                        <i class="ph text-2xl ph-list"></i>
+        <div class="content-area">
+            <div class="content-header">
+                <div class="tabs">
+                    <button class="tab active" data-tab="builder">
+                        <span class="material-icons">construction</span>
+                        <span>Builder</span>
                     </button>
-                    <nav class="flex space-x-1 bg-surface p-1 rounded-lg border border-slate-700">
-                        <button onclick="setView('builder')" id="tab-builder" class="px-3 py-1 text-xs font-medium rounded-md bg-slate-600 text-white shadow-sm transition-all">Builder</button>
-                        <button onclick="setView('deploy')" id="tab-deploy" class="px-3 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-white transition-all">Deploy</button>
-                        <button onclick="setView('logs')" id="tab-logs" class="px-3 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-white transition-all">Logs</button>
-                    </nav>
-                </div>
-                
-                <div class="flex items-center gap-3">
-                    <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500 bg-surface px-2 py-1 rounded border border-slate-700">
-                        <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                        <span id="last-saved">Not saved</span>
-                    </div>
-                </div>
-            </header>
-
-            <div id="view-builder" class="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 pb-32 scroll-smooth" style="height: calc(100vh - 120px); -webkit-overflow-scrolling: touch;">
-                
-                <div class="flex justify-center mb-6">
-                    <div class="inline-flex rounded-lg border border-slate-700 bg-surface p-0.5">
-                        <button onclick="setLevel(1)" id="lvl-1" class="px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-white shadow-sm transition-all flex items-center gap-2">
-                            <i class="ph-bold ph-magic-wand"></i> No-Code
-                        </button>
-                        <button onclick="setLevel(2)" id="lvl-2" class="px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-white transition-all flex items-center gap-2">
-                            <i class="ph-bold ph-columns"></i> Split
-                        </button>
-                        <button onclick="setLevel(3)" id="lvl-3" class="px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-white transition-all flex items-center gap-2">
-                            <i class="ph-bold ph-code"></i> Code
-                        </button>
-                    </div>
+                    <button class="tab" data-tab="deploy">
+                        <span class="material-icons">rocket_launch</span>
+                        <span>Deploy</span>
+                    </button>
+                    <button class="tab" data-tab="logs">
+                        <span class="material-icons">bug_report</span>
+                        <span>Logs</span>
+                    </button>
                 </div>
 
-                <div class="max-w-5xl mx-auto space-y-6 w-full">
-                    
-                    <section class="bg-surface rounded-xl border border-slate-700 p-5 shadow-sm">
-                        <h2 class="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
-                            <i class="ph-duotone ph-sliders"></i> Global Config
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="text-xs font-medium text-slate-400">API Name</label>
-                                <input type="text" id="api-name" value="" class="w-full bg-background border border-slate-600 rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" placeholder="e.g., My Awesome API">
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="testAPI()">
+                        <span class="material-icons">science</span>
+                        <span>Test</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="saveAPI()">
+                        <span class="material-icons">save</span>
+                        <span>Save</span>
+                    </button>
+                    <button class="btn btn-success" onclick="switchTab('deploy')">
+                        <span class="material-icons">rocket_launch</span>
+                        <span>Deploy</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <div class="view active" id="builderView">
+                    <div class="level-selector">
+                        <button class="level-btn active" data-level="1">
+                            <span class="material-icons">auto_fix_high</span>
+                            <span>No-Code</span>
+                        </button>
+                        <button class="level-btn" data-level="2">
+                            <span class="material-icons">view_column</span>
+                            <span>Split View</span>
+                        </button>
+                        <button class="level-btn" data-level="3">
+                            <span class="material-icons">code</span>
+                            <span>Code Editor</span>
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="material-icons">settings</span>
+                                <span>Global Configuration</span>
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-xs font-medium text-slate-400">Auth Strategy</label>
-                                <select id="auth-strategy" class="w-full bg-background border border-slate-600 rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors">
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">API Name</label>
+                                <input type="text" class="form-input" id="apiName" placeholder="My Awesome API">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Authentication Strategy</label>
+                                <select class="form-select" id="authStrategy">
                                     <option value="jwt">JWT (Bearer Token)</option>
                                     <option value="apikey">API Key</option>
                                     <option value="none">None (Public)</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="mt-4 space-y-2">
-                            <label class="text-xs font-medium text-slate-400">Description</label>
-                            <textarea id="api-description" rows="2" class="w-full bg-background border border-slate-600 rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" placeholder="Describe your API"></textarea>
+                        <div class="form-group" style="margin-top: 1.25rem;">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-textarea" id="apiDescription" placeholder="Describe your API"></textarea>
                         </div>
-                    </section>
+                    </div>
 
-                    <section id="visual-builder" class="bg-surface rounded-xl border border-slate-700 overflow-hidden shadow-sm w-full">
-                        <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
-                            <h2 class="text-sm font-semibold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                <i class="ph-duotone ph-arrows-left-right"></i> Endpoints
-                            </h2>
-                            <button onclick="addEndpoint()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-md flex items-center gap-1 transition">
-                                <i class="ph-bold ph-plus"></i> Add
+                    <div class="card" id="visualBuilder">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="material-icons">link</span>
+                                <span>Endpoints</span>
+                            </div>
+                            <button class="btn btn-secondary" style="padding: 0.375rem 0.75rem;" onclick="addEndpoint()">
+                                <span class="material-icons">add</span>
+                                <span>Add Endpoint</span>
                             </button>
                         </div>
-                        
-                        <div id="endpoints-list" class="divide-y divide-slate-700 max-h-96 overflow-y-auto" style="-webkit-overflow-scrolling: touch;"></div>
+                        <div class="endpoints-list" id="endpointsList"></div>
+                    </div>
 
-                        <div class="p-5 border-t border-slate-700 bg-slate-900/30 max-h-64 overflow-y-auto" style="-webkit-overflow-scrolling: touch;">
-                            <h3 class="text-xs font-semibold text-slate-400 mb-3 sticky top-0 bg-slate-900/30 pb-2">Response Schema (JSON)</h3>
-                            <div id="schema-fields" class="space-y-2"></div>
-                            <button onclick="addSchemaField()" class="text-xs text-primary hover:underline mt-2 flex items-center gap-1">
-                                <i class="ph-bold ph-plus"></i> Add Field
+                    <div class="card" id="schemaBuilder">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="material-icons">data_object</span>
+                                <span>Response Schema</span>
+                            </div>
+                            <button class="btn btn-secondary" style="padding: 0.375rem 0.75rem;" onclick="addSchemaField()">
+                                <span class="material-icons">add</span>
+                                <span>Add Field</span>
                             </button>
                         </div>
-                    </section>
+                        <div class="schema-fields" id="schemaFields"></div>
+                    </div>
 
-                    <section id="code-editor" class="hidden bg-[#1e1e1e] rounded-xl border border-slate-700 shadow-2xl overflow-hidden h-96 flex flex-col">
-                        <div class="bg-[#252526] px-4 py-2 flex justify-between items-center border-b border-[#333]">
-                            <span class="text-xs text-slate-400 font-mono">handlers/api.js</span>
-                            <div class="flex gap-2">
-                                <span class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></span>
-                                <span class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></span>
-                                <span class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></span>
+                    <div class="code-editor" id="codeEditor">
+                        <div class="code-header">
+                            <div class="code-filename">handlers/api.js</div>
+                        </div>
+                        <div class="code-content">
+                            <textarea class="code-textarea" id="codeContent" spellcheck="false"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="deployView">
+                    <div class="deploy-modal">
+                        <div class="deploy-card">
+                            <div class="deploy-icon">
+                                <span class="material-icons">rocket_launch</span>
+                            </div>
+                            <div class="deploy-title">Ready to Deploy</div>
+                            <div class="deploy-desc">Your API will be deployed to the edge network with zero infrastructure cost.</div>
+                            
+                            <div class="deploy-input-group">
+                                <div class="deploy-label">Custom Subdomain</div>
+                                <div class="deploy-url-input">
+                                    <span class="deploy-prefix">raft.app/</span>
+                                    <input type="text" class="form-input" id="deploySubdomain" placeholder="my-api" style="flex: 1;">
+                                </div>
+                            </div>
+
+                            <div class="deploy-result" id="deployResult">
+                                <div class="result-item">
+                                    <div class="result-label">API URL</div>
+                                    <div class="result-value success">
+                                        <span id="deployedUrl" style="flex: 1;"></span>
+                                        <button class="btn-icon" onclick="copyURL()">
+                                            <span class="material-icons">content_copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-label">Authentication Token</div>
+                                    <div class="result-value warning">
+                                        <span id="authToken" style="flex: 1; font-size: 0.75rem;"></span>
+                                        <button class="btn-icon" onclick="copyToken()">
+                                            <span class="material-icons">content_copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-success" style="width: 100%; justify-content: center;" onclick="deployAPI()">
+                                <span class="material-icons">cloud_upload</span>
+                                <span>Deploy Now</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="logsView">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="material-icons">terminal</span>
+                                <span>Platform Debug Logs</span>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem;">
+                                <select class="form-select" id="logFilter" onchange="filterLogs()" style="width: auto;">
+                                    <option value="all">All Levels</option>
+                                    <option value="info">Info</option>
+                                    <option value="success">Success</option>
+                                    <option value="warning">Warning</option>
+                                    <option value="error">Error</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="clearLogs()">
+                                    <span class="material-icons">delete</span>
+                                    <span>Clear</span>
+                                </button>
                             </div>
                         </div>
-                        <div class="flex-1 p-4 font-mono text-sm overflow-auto leading-6">
-                            <textarea id="code-content" class="w-full h-full bg-transparent text-slate-300 outline-none resize-none" spellcheck="false"></textarea>
-                        </div>
-                        <div class="h-32 border-t border-slate-700 bg-black p-3 font-mono text-xs overflow-y-auto">
-                            <div class="text-slate-500 uppercase text-[10px] mb-2 tracking-wider">Console</div>
-                            <div id="console-output"></div>
-                        </div>
-                    </section>
+                        <div class="logs-container" id="logsContainer"></div>
+                    </div>
                 </div>
             </div>
-
-            <div id="view-deploy" class="hidden flex-1 overflow-y-auto p-8 flex items-center justify-center" style="height: calc(100vh - 120px); -webkit-overflow-scrolling: touch;">
-                <div class="bg-surface p-8 rounded-2xl border border-slate-700 max-w-md w-full text-center space-y-6 shadow-2xl">
-                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto flex items-center justify-center shadow-lg shadow-primary/20">
-                        <i class="ph-fill ph-rocket-launch text-3xl text-white"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-white mb-2">Ready to Launch?</h2>
-                        <p class="text-slate-400 text-sm">Your API will be deployed to the edge network.</p>
-                    </div>
-                    
-                    <div class="bg-background rounded-lg p-3 text-left border border-slate-700">
-                        <label class="text-[10px] uppercase text-slate-500 font-bold">Subdomain</label>
-                        <div class="flex items-center">
-                            <span class="text-slate-400 text-sm">raft.app/</span>
-                            <input type="text" id="deploy-subdomain" class="bg-transparent text-white text-sm outline-none flex-1 font-mono ml-1" placeholder="my-api">
-                        </div>
-                    </div>
-
-                    <div id="deploy-result" class="hidden bg-slate-900 rounded-lg p-4 text-left">
-                        <div class="text-xs text-slate-400 mb-2">Your API URL:</div>
-                        <div class="flex items-center gap-2">
-                            <code id="deployed-url" class="text-sm text-success font-mono flex-1"></code>
-                            <button onclick="copyURL()" class="text-slate-400 hover:text-white">
-                                <i class="ph-bold ph-copy"></i>
-                            </button>
-                        </div>
-                        <div class="text-xs text-slate-400 mt-3 mb-2">Auth Token:</div>
-                        <div class="flex items-center gap-2">
-                            <code id="auth-token" class="text-xs text-warning font-mono flex-1 truncate"></code>
-                            <button onclick="copyToken()" class="text-slate-400 hover:text-white">
-                                <i class="ph-bold ph-copy"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <button onclick="deployAPI()" class="w-full bg-success hover:bg-emerald-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-success/20 transition transform active:scale-95">
-                        Deploy Now
-                    </button>
-                </div>
-            </div>
-
-            <div id="view-logs" class="hidden flex-1 flex flex-col overflow-hidden" style="height: calc(100vh - 120px);">
-                <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-surface/50 flex-shrink-0">
-                    <h2 class="text-lg font-bold">Platform Debug Logs</h2>
-                    <div class="flex gap-2">
-                        <select id="log-filter" onchange="filterLogs()" class="bg-background border border-slate-600 rounded px-2 py-1 text-xs">
-                            <option value="all">All Levels</option>
-                            <option value="info">Info</option>
-                            <option value="success">Success</option>
-                            <option value="warning">Warning</option>
-                            <option value="error">Error</option>
-                        </select>
-                        <button onclick="clearLogs()" class="text-xs bg-error/20 text-error hover:bg-error/30 px-3 py-1 rounded transition">
-                            Clear Logs
-                        </button>
-                    </div>
-                </div>
-                <div id="logs-container" class="flex-1 overflow-y-auto p-4 space-y-2 font-mono text-xs" style="-webkit-overflow-scrolling: touch;"></div>
-            </div>
-
-            <div class="h-16 border-t border-slate-700 bg-background/95 backdrop-blur fixed bottom-0 left-0 right-0 md:left-64 px-4 sm:px-6 flex items-center justify-between z-30 shadow-lg">
-                <div class="flex items-center gap-2 text-xs text-slate-500">
-                    <i class="ph-bold ph-check-circle text-success"></i>
-                    <span>System Online</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="testAPI()" class="px-3 sm:px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 text-xs sm:text-sm font-medium transition">
-                        <i class="ph-bold ph-flask mr-1 sm:mr-2"></i><span class="hidden sm:inline">Test</span>
-                    </button>
-                    <button onclick="saveAPI()" class="px-3 sm:px-4 py-2 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs sm:text-sm font-medium shadow-lg shadow-primary/20 transition transform active:scale-95 flex items-center">
-                        <i class="ph-bold ph-floppy-disk mr-1 sm:mr-2"></i><span class="hidden sm:inline">Save</span>
-                    </button>
-                    <button onclick="setView('deploy')" class="px-3 sm:px-4 py-2 rounded-lg bg-success hover:bg-emerald-500 text-white text-xs sm:text-sm font-medium shadow-lg shadow-success/20 transition transform active:scale-95 flex items-center">
-                        <i class="ph-bold ph-rocket mr-1 sm:mr-2"></i><span class="hidden sm:inline">Deploy</span>
-                    </button>
-                </div>
-            </div>
-
-        </main>
+        </div>
     </div>
 
     <script>
-/**
- * FrontendRAFT v0.1.0 - Complete Implementation
- * Based on CSOP: https://github.com/Nexus-Studio-CEO/CSOP
- * @author DAOUDA Abdoul Anzize - Nexus Studio
- * @date December 28, 2025
- */
-
 const RAFT = {
     version: '0.1.0',
     state: {
@@ -319,65 +1061,56 @@ const RAFT = {
                 const request = indexedDB.open(this.dbName, 1);
                 
                 request.onerror = () => {
-                    RAFT.logger.log('error', `IndexedDB: Failed to open database - ${request.error}`);
+                    RAFT.logger.log('error', 'IndexedDB: Failed to open database');
                     reject(request.error);
                 };
                 
                 request.onsuccess = () => {
                     this.db = request.result;
-                    RAFT.logger.log('success', 'IndexedDB: Database opened successfully');
+                    RAFT.logger.log('success', 'IndexedDB: Database initialized');
                     resolve(this.db);
                 };
                 
                 request.onupgradeneeded = (event) => {
                     const db = event.target.result;
-                    
                     if (!db.objectStoreNames.contains(this.storeName)) {
                         const objectStore = db.createObjectStore(this.storeName, { keyPath: 'key' });
                         objectStore.createIndex('timestamp', 'timestamp', { unique: false });
                         objectStore.createIndex('type', 'type', { unique: false });
-                        RAFT.logger.log('info', 'IndexedDB: Object store created');
                     }
                 };
             });
         },
         
         async ensureDB() {
-            if (!this.db) {
-                await this.init();
-            }
+            if (!this.db) await this.init();
             return this.db;
         },
         
         async save(key, data) {
             try {
                 await this.ensureDB();
-                
                 return new Promise((resolve, reject) => {
                     const transaction = this.db.transaction([this.storeName], 'readwrite');
                     const objectStore = transaction.objectStore(this.storeName);
-                    
                     const record = {
                         key: `raft_${key}`,
                         value: data,
                         timestamp: Date.now(),
                         type: typeof data === 'object' ? 'object' : 'primitive'
                     };
-                    
                     const request = objectStore.put(record);
-                    
                     request.onsuccess = () => {
-                        RAFT.logger.log('info', `Storage: Saved ${key} to IndexedDB`);
+                        RAFT.logger.log('info', `Storage: Saved ${key}`);
                         resolve({ success: true, key });
                     };
-                    
                     request.onerror = () => {
-                        RAFT.logger.log('error', `Storage: Failed to save ${key} - ${request.error}`);
+                        RAFT.logger.log('error', `Storage: Failed to save ${key}`);
                         reject(request.error);
                     };
                 });
             } catch (error) {
-                RAFT.logger.log('error', `Storage: Save error - ${error.message}`);
+                RAFT.logger.log('error', `Storage: Error - ${error.message}`);
                 return { success: false, error };
             }
         },
@@ -385,29 +1118,16 @@ const RAFT = {
         async get(key) {
             try {
                 await this.ensureDB();
-                
                 return new Promise((resolve, reject) => {
                     const transaction = this.db.transaction([this.storeName], 'readonly');
                     const objectStore = transaction.objectStore(this.storeName);
                     const request = objectStore.get(`raft_${key}`);
-                    
                     request.onsuccess = () => {
-                        if (request.result) {
-                            RAFT.logger.log('info', `Storage: Retrieved ${key} from IndexedDB`);
-                            resolve(request.result.value);
-                        } else {
-                            RAFT.logger.log('info', `Storage: Key ${key} not found in IndexedDB`);
-                            resolve(null);
-                        }
+                        resolve(request.result ? request.result.value : null);
                     };
-                    
-                    request.onerror = () => {
-                        RAFT.logger.log('error', `Storage: Failed to get ${key} - ${request.error}`);
-                        reject(request.error);
-                    };
+                    request.onerror = () => reject(request.error);
                 });
             } catch (error) {
-                RAFT.logger.log('error', `Storage: Get error - ${error.message}`);
                 return null;
             }
         },
@@ -415,24 +1135,17 @@ const RAFT = {
         async delete(key) {
             try {
                 await this.ensureDB();
-                
                 return new Promise((resolve, reject) => {
                     const transaction = this.db.transaction([this.storeName], 'readwrite');
                     const objectStore = transaction.objectStore(this.storeName);
                     const request = objectStore.delete(`raft_${key}`);
-                    
                     request.onsuccess = () => {
-                        RAFT.logger.log('info', `Storage: Deleted ${key} from IndexedDB`);
+                        RAFT.logger.log('info', `Storage: Deleted ${key}`);
                         resolve({ success: true });
                     };
-                    
-                    request.onerror = () => {
-                        RAFT.logger.log('error', `Storage: Failed to delete ${key} - ${request.error}`);
-                        reject(request.error);
-                    };
+                    request.onerror = () => reject(request.error);
                 });
             } catch (error) {
-                RAFT.logger.log('error', `Storage: Delete error - ${error.message}`);
                 return { success: false, error };
             }
         },
@@ -440,110 +1153,20 @@ const RAFT = {
         async list(prefix = '') {
             try {
                 await this.ensureDB();
-                
                 return new Promise((resolve, reject) => {
                     const transaction = this.db.transaction([this.storeName], 'readonly');
                     const objectStore = transaction.objectStore(this.storeName);
                     const request = objectStore.getAllKeys();
-                    
                     request.onsuccess = () => {
                         const keys = request.result
                             .filter(key => key.startsWith(`raft_${prefix}`))
                             .map(key => key.replace('raft_', ''));
-                        
-                        RAFT.logger.log('info', `Storage: Listed ${keys.length} keys with prefix "${prefix}"`);
                         resolve(keys);
                     };
-                    
-                    request.onerror = () => {
-                        RAFT.logger.log('error', `Storage: Failed to list keys - ${request.error}`);
-                        reject(request.error);
-                    };
+                    request.onerror = () => reject(request.error);
                 });
             } catch (error) {
-                RAFT.logger.log('error', `Storage: List error - ${error.message}`);
                 return [];
-            }
-        },
-        
-        async clear() {
-            try {
-                await this.ensureDB();
-                
-                return new Promise((resolve, reject) => {
-                    const transaction = this.db.transaction([this.storeName], 'readwrite');
-                    const objectStore = transaction.objectStore(this.storeName);
-                    const request = objectStore.clear();
-                    
-                    request.onsuccess = () => {
-                        RAFT.logger.log('info', 'Storage: Cleared all data from IndexedDB');
-                        resolve({ success: true });
-                    };
-                    
-                    request.onerror = () => {
-                        RAFT.logger.log('error', `Storage: Failed to clear - ${request.error}`);
-                        reject(request.error);
-                    };
-                });
-            } catch (error) {
-                RAFT.logger.log('error', `Storage: Clear error - ${error.message}`);
-                return { success: false, error };
-            }
-        },
-        
-        async getAll() {
-            try {
-                await this.ensureDB();
-                
-                return new Promise((resolve, reject) => {
-                    const transaction = this.db.transaction([this.storeName], 'readonly');
-                    const objectStore = transaction.objectStore(this.storeName);
-                    const request = objectStore.getAll();
-                    
-                    request.onsuccess = () => {
-                        const records = request.result.map(record => ({
-                            key: record.key.replace('raft_', ''),
-                            value: record.value,
-                            timestamp: record.timestamp
-                        }));
-                        
-                        RAFT.logger.log('info', `Storage: Retrieved all ${records.length} records`);
-                        resolve(records);
-                    };
-                    
-                    request.onerror = () => {
-                        RAFT.logger.log('error', `Storage: Failed to get all - ${request.error}`);
-                        reject(request.error);
-                    };
-                });
-            } catch (error) {
-                RAFT.logger.log('error', `Storage: GetAll error - ${error.message}`);
-                return [];
-            }
-        },
-        
-        async count() {
-            try {
-                await this.ensureDB();
-                
-                return new Promise((resolve, reject) => {
-                    const transaction = this.db.transaction([this.storeName], 'readonly');
-                    const objectStore = transaction.objectStore(this.storeName);
-                    const request = objectStore.count();
-                    
-                    request.onsuccess = () => {
-                        RAFT.logger.log('info', `Storage: Total records count: ${request.result}`);
-                        resolve(request.result);
-                    };
-                    
-                    request.onerror = () => {
-                        RAFT.logger.log('error', `Storage: Failed to count - ${request.error}`);
-                        reject(request.error);
-                    };
-                });
-            } catch (error) {
-                RAFT.logger.log('error', `Storage: Count error - ${error.message}`);
-                return 0;
             }
         }
     },
@@ -555,7 +1178,7 @@ const RAFT = {
         set(key, value, customTTL) {
             const expiry = Date.now() + (customTTL || this.ttl);
             this.store.set(key, { value, expiry });
-            RAFT.logger.log('info', `Cache: Set ${key} (TTL: ${customTTL || this.ttl}ms)`);
+            RAFT.logger.log('info', `Cache: Set ${key}`);
         },
         
         get(key) {
@@ -563,7 +1186,6 @@ const RAFT = {
             if (!item) return null;
             if (Date.now() > item.expiry) {
                 this.store.delete(key);
-                RAFT.logger.log('info', `Cache: Expired ${key}`);
                 return null;
             }
             return item.value;
@@ -572,11 +1194,6 @@ const RAFT = {
         invalidate(key) {
             this.store.delete(key);
             RAFT.logger.log('info', `Cache: Invalidated ${key}`);
-        },
-        
-        clear() {
-            this.store.clear();
-            RAFT.logger.log('info', 'Cache: Cleared all entries');
         }
     },
     
@@ -587,24 +1204,16 @@ const RAFT = {
         async add(request) {
             this.queue.push(request);
             RAFT.logger.log('info', `Batch: Added request (queue: ${this.queue.length})`);
-            if (!this.processing) {
-                await this.process();
-            }
+            if (!this.processing) await this.process();
         },
         
         async process() {
             if (this.queue.length === 0) return;
-            
             this.processing = true;
             RAFT.logger.log('info', `Batch: Processing ${this.queue.length} requests`);
-            
             const batch = [...this.queue];
             this.queue = [];
-            
-            const results = await Promise.all(
-                batch.map(req => this.executeRequest(req))
-            );
-            
+            const results = await Promise.all(batch.map(req => this.executeRequest(req)));
             this.processing = false;
             RAFT.logger.log('success', `Batch: Completed ${results.length} requests`);
             return results;
@@ -629,56 +1238,44 @@ const RAFT = {
             const item = this.updates.get(id);
             if (item) {
                 item.status = 'confirmed';
-                RAFT.logger.log('success', `Optimistic: Confirmed update ${id}`);
+                RAFT.logger.log('success', `Optimistic: Confirmed ${id}`);
             }
         },
         
         rollback(id) {
             this.updates.delete(id);
-            RAFT.logger.log('warning', `Optimistic: Rolled back update ${id}`);
+            RAFT.logger.log('warning', `Optimistic: Rolled back ${id}`);
         }
     },
     
     query: {
         parse(queryString) {
             const parts = queryString.split('.');
-            RAFT.logger.log('info', `Query: Parsing "${queryString}"`);
-            return {
-                resource: parts[0],
-                operations: parts.slice(1)
-            };
+            return { resource: parts[0], operations: parts.slice(1) };
         },
         
         execute(data, query) {
             const parsed = this.parse(query);
             let result = data;
-            
             for (const op of parsed.operations) {
-                if (op.startsWith('filter')) {
+                if (op.startsWith('filter') && Array.isArray(result)) {
                     const condition = op.match(/\((.*?)\)/)?.[1];
-                    if (condition && Array.isArray(result)) {
-                        result = result.filter(item => eval(`item.${condition}`));
-                    }
+                    if (condition) result = result.filter(item => eval(`item.${condition}`));
                 }
-                if (op.startsWith('select')) {
+                if (op.startsWith('select') && Array.isArray(result)) {
                     const fields = op.match(/\((.*?)\)/)?.[1].split(',');
-                    if (fields && Array.isArray(result)) {
-                        result = result.map(item => {
-                            const selected = {};
-                            fields.forEach(f => selected[f.trim()] = item[f.trim()]);
-                            return selected;
-                        });
-                    }
+                    if (fields) result = result.map(item => {
+                        const selected = {};
+                        fields.forEach(f => selected[f.trim()] = item[f.trim()]);
+                        return selected;
+                    });
                 }
-                if (op.startsWith('limit')) {
+                if (op.startsWith('limit') && Array.isArray(result)) {
                     const limit = parseInt(op.match(/\((.*?)\)/)?.[1]);
-                    if (limit && Array.isArray(result)) {
-                        result = result.slice(0, limit);
-                    }
+                    if (limit) result = result.slice(0, limit);
                 }
             }
-            
-            RAFT.logger.log('success', `Query: Executed successfully`);
+            RAFT.logger.log('success', 'Query: Executed successfully');
             return result;
         }
     },
@@ -696,7 +1293,7 @@ const RAFT = {
             const stream = this.active.get(id);
             if (stream) {
                 stream.subscribers.push(callback);
-                RAFT.logger.log('info', `Stream: Subscriber added to ${id}`);
+                RAFT.logger.log('info', `Stream: Subscribed to ${id}`);
             }
         },
         
@@ -706,11 +1303,6 @@ const RAFT = {
                 stream.subscribers.forEach(cb => cb(data));
                 RAFT.logger.log('info', `Stream: Pushed data to ${id}`);
             }
-        },
-        
-        close(id) {
-            this.active.delete(id);
-            RAFT.logger.log('info', `Stream: Closed ${id}`);
         }
     },
     
@@ -719,9 +1311,8 @@ const RAFT = {
             const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
             const body = btoa(JSON.stringify({ ...payload, exp: Date.now() + 86400000 }));
             const signature = btoa(`${header}.${body}.secret`);
-            const token = `${header}.${body}.${signature}`;
             RAFT.logger.log('success', 'Auth: Generated JWT token');
-            return token;
+            return `${header}.${body}.${signature}`;
         },
         
         validateToken(token) {
@@ -750,45 +1341,18 @@ const RAFT = {
         async handle(method, path, req) {
             const key = `${method}:${path}`;
             const handler = this.routes.get(key);
-            
             if (!handler) {
                 RAFT.logger.log('error', `Router: No handler for ${key}`);
                 return { status: 404, error: 'Not Found' };
             }
-            
             try {
                 const result = await handler(req);
                 RAFT.logger.log('success', `Router: Handled ${key}`);
                 return { status: 200, data: result };
             } catch (error) {
-                RAFT.logger.log('error', `Router: Error in ${key} - ${error.message}`);
+                RAFT.logger.log('error', `Router: Error in ${key}`);
                 return { status: 500, error: error.message };
             }
-        }
-    },
-    
-    p2p: {
-        peers: new Map(),
-        
-        async connect(peerId) {
-            this.peers.set(peerId, { connected: true, lastSeen: Date.now() });
-            RAFT.logger.log('success', `P2P: Connected to peer ${peerId}`);
-            return true;
-        },
-        
-        async send(peerId, message) {
-            const peer = this.peers.get(peerId);
-            if (!peer) {
-                RAFT.logger.log('error', `P2P: Peer ${peerId} not found`);
-                return false;
-            }
-            RAFT.logger.log('info', `P2P: Sent message to ${peerId}`);
-            return true;
-        },
-        
-        disconnect(peerId) {
-            this.peers.delete(peerId);
-            RAFT.logger.log('info', `P2P: Disconnected from ${peerId}`);
         }
     },
     
@@ -798,136 +1362,33 @@ const RAFT = {
         async register(apiConfig) {
             const id = `api_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             const url = `${this.baseURL}/${id}`;
-            
-            await RAFT.storage.save(`deployed_${id}`, {
-                ...apiConfig,
-                id,
-                url,
-                deployedAt: Date.now()
-            });
-            
+            await RAFT.storage.save(`deployed_${id}`, { ...apiConfig, id, url, deployedAt: Date.now() });
             RAFT.logger.log('success', `CDN: Registered API ${id}`);
             return { id, url };
-        },
-        
-        async get(id) {
-            const config = await RAFT.storage.get(`deployed_${id}`);
-            if (config) {
-                RAFT.logger.log('info', `CDN: Retrieved config for ${id}`);
-            }
-            return config;
         }
     },
     
     logger: {
         log(level, message) {
-            const entry = {
-                timestamp: new Date().toISOString(),
-                level,
-                message,
-                id: Date.now() + Math.random()
-            };
-            
+            const entry = { timestamp: new Date().toISOString(), level, message, id: Date.now() + Math.random() };
             RAFT.state.logs.push(entry);
-            
-            if (RAFT.state.logs.length > 1000) {
-                RAFT.state.logs = RAFT.state.logs.slice(-500);
-            }
-            
+            if (RAFT.state.logs.length > 1000) RAFT.state.logs = RAFT.state.logs.slice(-500);
             updateLogsUI();
         }
     },
     
     async init() {
         RAFT.logger.log('info', 'FrontendRAFT initializing...');
-        
         const savedAPIs = await this.storage.get('apis') || [];
         this.state.apis = savedAPIs;
-        
         const savedDeployed = await this.storage.list('deployed_');
         this.state.deployed = savedDeployed;
-        
         updateAPICount();
         renderProjects();
-        
-        if (this.state.apis.length > 0) {
-            loadAPI(this.state.apis[0].id);
-        }
-        
-        RAFT.logger.log('success', 'FrontendRAFT initialized successfully');
+        if (this.state.apis.length > 0) loadAPI(this.state.apis[0].id);
+        RAFT.logger.log('success', 'FrontendRAFT initialized');
     }
 };
-
-let currentLevel = 1;
-let currentView = 'builder';
-
-function toggleSidebar() {
-    const sb = document.getElementById('sidebar');
-    const ov = document.getElementById('sidebar-overlay');
-    sb.classList.toggle('-translate-x-full');
-    ov.classList.toggle('hidden');
-    RAFT.logger.log('info', 'UI: Toggled sidebar');
-}
-
-function setLevel(level) {
-    currentLevel = level;
-    
-    const btns = {
-        1: document.getElementById('lvl-1'),
-        2: document.getElementById('lvl-2'),
-        3: document.getElementById('lvl-3')
-    };
-    
-    Object.values(btns).forEach(btn => {
-        btn.classList.remove('bg-primary', 'text-white');
-        btn.classList.add('text-slate-400');
-    });
-    
-    btns[level].classList.add('bg-primary', 'text-white');
-    btns[level].classList.remove('text-slate-400');
-    
-    const visualBuilder = document.getElementById('visual-builder');
-    const codeEditor = document.getElementById('code-editor');
-    
-    if (level === 1) {
-        visualBuilder.classList.remove('hidden');
-        codeEditor.classList.add('hidden');
-    } else if (level === 2) {
-        visualBuilder.classList.remove('hidden');
-        codeEditor.classList.remove('hidden');
-    } else if (level === 3) {
-        visualBuilder.classList.add('hidden');
-        codeEditor.classList.remove('hidden');
-    }
-    
-    RAFT.logger.log('info', `UI: Switched to level ${level}`);
-}
-
-function setView(viewName) {
-    currentView = viewName;
-    
-    document.querySelectorAll('[id^="tab-"]').forEach(t => {
-        t.classList.remove('bg-slate-600', 'text-white');
-        t.classList.add('text-slate-400');
-    });
-    
-    const tab = document.getElementById(`tab-${viewName}`);
-    if (tab) {
-        tab.classList.add('bg-slate-600', 'text-white');
-        tab.classList.remove('text-slate-400');
-    }
-    
-    document.getElementById('view-builder').classList.add('hidden');
-    document.getElementById('view-deploy').classList.add('hidden');
-    document.getElementById('view-logs').classList.add('hidden');
-    
-    const view = document.getElementById(`view-${viewName}`);
-    if (view) {
-        view.classList.remove('hidden');
-    }
-    
-    RAFT.logger.log('info', `UI: Switched to ${viewName} view`);
-}
 
 function createNewAPI() {
     const id = `api_${Date.now()}`;
@@ -941,42 +1402,32 @@ function createNewAPI() {
         createdAt: Date.now(),
         updatedAt: Date.now()
     };
-    
     RAFT.state.apis.push(api);
     RAFT.state.currentAPI = api;
-    
-    document.getElementById('api-name').value = api.name;
-    document.getElementById('api-description').value = api.description;
-    document.getElementById('auth-strategy').value = api.auth;
-    
+    document.getElementById('apiName').value = api.name;
+    document.getElementById('apiDescription').value = api.description;
+    document.getElementById('authStrategy').value = api.auth;
     RAFT.state.endpoints = [];
     RAFT.state.schemaFields = [];
-    
     renderEndpoints();
     renderSchema();
     renderProjects();
     updateAPICount();
-    
     RAFT.logger.log('success', `Created new API: ${id}`);
 }
 
 function loadAPI(apiId) {
     const api = RAFT.state.apis.find(a => a.id === apiId);
     if (!api) return;
-    
     RAFT.state.currentAPI = api;
-    
-    document.getElementById('api-name').value = api.name || '';
-    document.getElementById('api-description').value = api.description || '';
-    document.getElementById('auth-strategy').value = api.auth || 'jwt';
-    
+    document.getElementById('apiName').value = api.name || '';
+    document.getElementById('apiDescription').value = api.description || '';
+    document.getElementById('authStrategy').value = api.auth || 'jwt';
     RAFT.state.endpoints = api.endpoints || [];
     RAFT.state.schemaFields = api.schema || [];
-    
     renderEndpoints();
     renderSchema();
     updateCodeEditor();
-    
     RAFT.logger.log('info', `Loaded API: ${apiId}`);
 }
 
@@ -987,11 +1438,9 @@ function addEndpoint() {
         path: '/endpoint',
         description: 'New endpoint'
     };
-    
     RAFT.state.endpoints.push(endpoint);
     renderEndpoints();
     updateCodeEditor();
-    
     RAFT.logger.log('info', `Added endpoint: ${endpoint.method} ${endpoint.path}`);
 }
 
@@ -1003,42 +1452,29 @@ function removeEndpoint(id) {
 }
 
 function renderEndpoints() {
-    const container = document.getElementById('endpoints-list');
+    const container = document.getElementById('endpointsList');
     if (!container) return;
-    
     if (RAFT.state.endpoints.length === 0) {
-        container.innerHTML = `
-            <div class="p-8 text-center text-slate-500">
-                <i class="ph ph-plug text-4xl mb-2"></i>
-                <p class="text-sm">No endpoints yet. Click "Add" to create one.</p>
-            </div>
-        `;
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"><span class="material-icons">link_off</span></div><div>No endpoints yet. Click "Add Endpoint" to create one.</div></div>';
         return;
     }
-    
     container.innerHTML = RAFT.state.endpoints.map(ep => {
-        const methodColors = {
-            'GET': 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-            'POST': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-            'PUT': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-            'DELETE': 'bg-red-500/10 text-red-500 border-red-500/20'
-        };
-        
+        const methodClass = `method-${ep.method.toLowerCase()}`;
         return `
-            <div class="p-4 hover:bg-slate-800/50 transition flex flex-col sm:flex-row gap-4 items-start sm:items-center group">
-                <div class="flex items-center gap-3 flex-1">
-                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${methodColors[ep.method]}">${ep.method}</span>
-                    <input type="text" value="${ep.path}" onchange="updateEndpoint('${ep.id}', 'path', this.value)" class="bg-transparent font-mono text-sm text-slate-300 outline-none border-b border-transparent hover:border-slate-600 focus:border-primary transition-colors">
-                    <input type="text" value="${ep.description || ''}" onchange="updateEndpoint('${ep.id}', 'description', this.value)" class="hidden sm:inline-block flex-1 bg-transparent text-xs text-slate-500 outline-none border-b border-transparent hover:border-slate-600 focus:border-primary transition-colors" placeholder="Description">
-                </div>
-                <div class="flex items-center gap-2">
-                    <select onchange="updateEndpoint('${ep.id}', 'method', this.value)" class="bg-background border border-slate-700 rounded px-2 py-1 text-xs">
+            <div class="endpoint-item">
+                <span class="method-badge ${methodClass}">${ep.method}</span>
+                <input type="text" value="${ep.path}" onchange="updateEndpoint('${ep.id}', 'path', this.value)" class="form-input endpoint-path" style="background: transparent; border: none; padding: 0;">
+                <input type="text" value="${ep.description || ''}" onchange="updateEndpoint('${ep.id}', 'description', this.value)" class="form-input endpoint-desc" style="background: transparent; border: none; padding: 0;" placeholder="Description">
+                <div class="endpoint-actions">
+                    <select onchange="updateEndpoint('${ep.id}', 'method', this.value)" class="form-select" style="width: 100px;">
                         <option ${ep.method === 'GET' ? 'selected' : ''}>GET</option>
                         <option ${ep.method === 'POST' ? 'selected' : ''}>POST</option>
                         <option ${ep.method === 'PUT' ? 'selected' : ''}>PUT</option>
                         <option ${ep.method === 'DELETE' ? 'selected' : ''}>DELETE</option>
                     </select>
-                    <button onclick="removeEndpoint('${ep.id}')" class="p-1.5 text-slate-400 hover:text-error hover:bg-error/10 rounded"><i class="ph-bold ph-trash"></i></button>
+                    <button onclick="removeEndpoint('${ep.id}')" class="btn-icon">
+                        <span class="material-icons">delete</span>
+                    </button>
                 </div>
             </div>
         `;
@@ -1050,21 +1486,15 @@ function updateEndpoint(id, field, value) {
     if (endpoint) {
         endpoint[field] = value;
         updateCodeEditor();
-        RAFT.logger.log('info', `Updated endpoint ${id}: ${field} = ${value}`);
+        RAFT.logger.log('info', `Updated endpoint ${id}: ${field}`);
     }
 }
 
 function addSchemaField() {
-    const field = {
-        id: `field_${Date.now()}`,
-        name: 'field',
-        type: 'String'
-    };
-    
+    const field = { id: `field_${Date.now()}`, name: 'field', type: 'String' };
     RAFT.state.schemaFields.push(field);
     renderSchema();
     updateCodeEditor();
-    
     RAFT.logger.log('info', `Added schema field: ${field.name}`);
 }
 
@@ -1076,23 +1506,17 @@ function removeSchemaField(id) {
 }
 
 function renderSchema() {
-    const container = document.getElementById('schema-fields');
+    const container = document.getElementById('schemaFields');
     if (!container) return;
-    
     if (RAFT.state.schemaFields.length === 0) {
-        container.innerHTML = `
-            <div class="text-slate-500 text-xs text-center py-4">
-                No fields defined yet
-            </div>
-        `;
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"><span class="material-icons">data_object</span></div><div>No fields defined yet</div></div>';
         return;
     }
-    
     container.innerHTML = RAFT.state.schemaFields.map(field => `
-        <div class="flex items-center gap-2">
-            <i class="ph-bold ph-dots-six-vertical text-slate-600 cursor-grab"></i>
-            <input type="text" value="${field.name}" onchange="updateSchemaField('${field.id}', 'name', this.value)" class="w-24 bg-background border border-slate-700 rounded px-2 py-1 text-xs font-mono">
-            <select onchange="updateSchemaField('${field.id}', 'type', this.value)" class="bg-background border border-slate-700 rounded px-2 py-1 text-xs text-secondary">
+        <div class="schema-field">
+            <span class="material-icons" style="color: var(--text-muted); cursor: grab;">drag_indicator</span>
+            <input type="text" value="${field.name}" onchange="updateSchemaField('${field.id}', 'name', this.value)" class="field-input" style="width: 120px;">
+            <select onchange="updateSchemaField('${field.id}', 'type', this.value)" class="field-type" style="width: 120px;">
                 <option ${field.type === 'String' ? 'selected' : ''}>String</option>
                 <option ${field.type === 'Number' ? 'selected' : ''}>Number</option>
                 <option ${field.type === 'Boolean' ? 'selected' : ''}>Boolean</option>
@@ -1100,9 +1524,9 @@ function renderSchema() {
                 <option ${field.type === 'Array' ? 'selected' : ''}>Array</option>
                 <option ${field.type === 'Object' ? 'selected' : ''}>Object</option>
             </select>
-            <div class="flex-1 border-b border-dashed border-slate-800"></div>
-            <button onclick="removeSchemaField('${field.id}')" class="text-slate-400 hover:text-error">
-                <i class="ph-bold ph-x"></i>
+            <div style="flex: 1;"></div>
+            <button onclick="removeSchemaField('${field.id}')" class="btn-icon">
+                <span class="material-icons">close</span>
             </button>
         </div>
     `).join('');
@@ -1113,17 +1537,15 @@ function updateSchemaField(id, field, value) {
     if (schemaField) {
         schemaField[field] = value;
         updateCodeEditor();
-        RAFT.logger.log('info', `Updated schema field ${id}: ${field} = ${value}`);
+        RAFT.logger.log('info', `Updated schema field ${id}: ${field}`);
     }
 }
 
 function updateCodeEditor() {
-    const codeContent = document.getElementById('code-content');
+    const codeContent = document.getElementById('codeContent');
     if (!codeContent) return;
-    
-    const apiName = document.getElementById('api-name')?.value || 'API';
-    const authStrategy = document.getElementById('auth-strategy')?.value || 'jwt';
-    
+    const apiName = document.getElementById('apiName')?.value || 'API';
+    const authStrategy = document.getElementById('authStrategy')?.value || 'jwt';
     const code = `/**
  * ${apiName}
  * Generated by FrontendRAFT v${RAFT.version}
@@ -1148,62 +1570,34 @@ ${RAFT.state.endpoints.map(ep => `
 api.${ep.method.toLowerCase()}('${ep.path}', async (req) => {
   // ${ep.description || 'Handler implementation'}
   const data = await RAFT.storage.get('${ep.path.replace(/\//g, '_')}');
-  return {
-    status: 200,
-    data: data || []
-  };
+  return { status: 200, data: data || [] };
 });`).join('\n')}
 
 // Initialize
 api.start();
 
 export default api;`;
-    
     codeContent.value = code;
 }
 
 async function saveAPI() {
-    if (!RAFT.state.currentAPI) {
-        createNewAPI();
-    }
-    
+    if (!RAFT.state.currentAPI) createNewAPI();
     const api = RAFT.state.currentAPI;
-    api.name = document.getElementById('api-name').value;
-    api.description = document.getElementById('api-description').value;
-    api.auth = document.getElementById('auth-strategy').value;
+    api.name = document.getElementById('apiName').value;
+    api.description = document.getElementById('apiDescription').value;
+    api.auth = document.getElementById('authStrategy').value;
     api.endpoints = RAFT.state.endpoints;
     api.schema = RAFT.state.schemaFields;
     api.updatedAt = Date.now();
-    
     await RAFT.storage.save('apis', RAFT.state.apis);
-    
-    document.getElementById('last-saved').textContent = 'Saved just now';
-    setTimeout(() => {
-        document.getElementById('last-saved').textContent = 'Last saved 1m ago';
-    }, 60000);
-    
     renderProjects();
     RAFT.logger.log('success', `Saved API: ${api.name}`);
 }
 
 async function testAPI() {
-    const consoleOutput = document.getElementById('console-output');
-    if (consoleOutput) {
-        consoleOutput.innerHTML += `
-            <div class="text-blue-400">> Running tests...</div>
-        `;
-    }
-    
+    RAFT.logger.log('info', 'Running tests...');
     await new Promise(r => setTimeout(r, 1000));
-    
-    if (consoleOutput) {
-        consoleOutput.innerHTML += `
-            <div class="text-green-400">> All tests passed (${RAFT.state.endpoints.length}/${RAFT.state.endpoints.length})</div>
-            <div class="text-slate-400">> Response time: ${Math.floor(Math.random() * 100)}ms</div>
-        `;
-    }
-    
-    RAFT.logger.log('success', 'Test completed successfully');
+    RAFT.logger.log('success', `All tests passed (${RAFT.state.endpoints.length}/${RAFT.state.endpoints.length})`);
 }
 
 async function deployAPI() {
@@ -1211,64 +1605,46 @@ async function deployAPI() {
         alert('Please create an API first');
         return;
     }
-    
     await saveAPI();
-    
-    const subdomain = document.getElementById('deploy-subdomain').value || 
+    const subdomain = document.getElementById('deploySubdomain').value || 
                       RAFT.state.currentAPI.name.toLowerCase().replace(/\s+/g, '-');
-    
-    const deployment = await RAFT.cdn.register({
-        ...RAFT.state.currentAPI,
-        subdomain
-    });
-    
-    const token = RAFT.auth.generateToken({
-        apiId: deployment.id,
-        name: RAFT.state.currentAPI.name
-    });
-    
-    document.getElementById('deployed-url').textContent = deployment.url;
-    document.getElementById('auth-token').textContent = token;
-    document.getElementById('deploy-result').classList.remove('hidden');
-    
+    const deployment = await RAFT.cdn.register({ ...RAFT.state.currentAPI, subdomain });
+    const token = RAFT.auth.generateToken({ apiId: deployment.id, name: RAFT.state.currentAPI.name });
+    document.getElementById('deployedUrl').textContent = deployment.url;
+    document.getElementById('authToken').textContent = token;
+    document.getElementById('deployResult').classList.add('active');
     updateAPICount();
-    
     RAFT.logger.log('success', `Deployed API to ${deployment.url}`);
 }
 
 function copyURL() {
-    const url = document.getElementById('deployed-url').textContent;
+    const url = document.getElementById('deployedUrl').textContent;
     navigator.clipboard.writeText(url);
     RAFT.logger.log('info', 'Copied URL to clipboard');
 }
 
 function copyToken() {
-    const token = document.getElementById('auth-token').textContent;
+    const token = document.getElementById('authToken').textContent;
     navigator.clipboard.writeText(token);
     RAFT.logger.log('info', 'Copied token to clipboard');
 }
 
 function renderProjects() {
-    const container = document.getElementById('projects-list');
+    const container = document.getElementById('projectsList');
     if (!container) return;
-    
     if (RAFT.state.apis.length === 0) {
-        container.innerHTML = `
-            <div class="px-3 py-8 text-center text-slate-500 text-xs">
-                No projects yet
-            </div>
-        `;
+        container.innerHTML = '<div class="empty-state" style="padding: 2rem 1rem;"><div style="color: var(--text-muted); font-size: 0.875rem;">No projects yet</div></div>';
         return;
     }
-    
     container.innerHTML = RAFT.state.apis.map(api => `
-        <div class="group flex items-center justify-between px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-md cursor-pointer ${api.id === RAFT.state.currentAPI?.id ? 'bg-slate-800' : ''}" onclick="loadAPI('${api.id}')">
-            <div class="flex items-center gap-2 flex-1 min-w-0">
-                <span class="w-2 h-2 rounded-full bg-success"></span>
-                <span class="text-sm truncate">${api.name || 'Untitled'}</span>
+        <div class="project-item ${api.id === RAFT.state.currentAPI?.id ? 'active' : ''}" onclick="loadAPI('${api.id}')">
+            <span class="status-dot"></span>
+            <div class="project-info">
+                <div class="project-name">${api.name || 'Untitled'}</div>
+                <div class="project-meta">${api.endpoints?.length || 0} endpoints</div>
             </div>
-            <button onclick="event.stopPropagation(); deleteAPI('${api.id}')" class="text-slate-500 opacity-0 group-hover:opacity-100 hover:text-error transition">
-                <i class="ph-bold ph-trash text-xs"></i>
+            <button onclick="event.stopPropagation(); deleteAPI('${api.id}')" class="btn-icon">
+                <span class="material-icons">delete</span>
             </button>
         </div>
     `).join('');
@@ -1276,64 +1652,41 @@ function renderProjects() {
 
 async function deleteAPI(apiId) {
     if (!confirm('Delete this API?')) return;
-    
     RAFT.state.apis = RAFT.state.apis.filter(a => a.id !== apiId);
     await RAFT.storage.save('apis', RAFT.state.apis);
-    
     if (RAFT.state.currentAPI?.id === apiId) {
         RAFT.state.currentAPI = null;
-        if (RAFT.state.apis.length > 0) {
-            loadAPI(RAFT.state.apis[0].id);
-        }
+        if (RAFT.state.apis.length > 0) loadAPI(RAFT.state.apis[0].id);
     }
-    
     renderProjects();
     updateAPICount();
     RAFT.logger.log('info', `Deleted API: ${apiId}`);
 }
 
 function updateAPICount() {
-    document.getElementById('api-count').textContent = RAFT.state.apis.length;
-    document.getElementById('deployed-count').textContent = RAFT.state.deployed.length;
+    document.getElementById('apiCount').textContent = RAFT.state.apis.length;
+    document.getElementById('deployedCount').textContent = RAFT.state.deployed.length;
 }
 
 function updateLogsUI() {
-    const container = document.getElementById('logs-container');
-    if (!container || currentView !== 'logs') return;
-    
-    const filter = document.getElementById('log-filter')?.value || 'all';
-    const filteredLogs = filter === 'all' 
-        ? RAFT.state.logs 
-        : RAFT.state.logs.filter(log => log.level === filter);
-    
-    const levelColors = {
-        info: 'text-blue-400',
-        success: 'text-green-400',
-        warning: 'text-yellow-400',
-        error: 'text-red-400'
-    };
-    
-    const levelIcons = {
-        info: 'ph-info',
-        success: 'ph-check-circle',
-        warning: 'ph-warning',
-        error: 'ph-x-circle'
-    };
-    
+    const container = document.getElementById('logsContainer');
+    if (!container || !document.getElementById('logsView').classList.contains('active')) return;
+    const filter = document.getElementById('logFilter')?.value || 'all';
+    const filteredLogs = filter === 'all' ? RAFT.state.logs : RAFT.state.logs.filter(log => log.level === filter);
+    if (filteredLogs.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"><span class="material-icons">terminal</span></div><div>No logs yet</div></div>';
+        return;
+    }
+    const iconMap = { info: 'info', success: 'check_circle', warning: 'warning', error: 'error' };
     container.innerHTML = filteredLogs.slice(-100).reverse().map(log => `
-        <div class="log-entry flex items-start gap-3 p-2 rounded hover:bg-slate-800/50 transition">
-            <i class="ph-fill ${levelIcons[log.level]} ${levelColors[log.level]} text-sm mt-0.5"></i>
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                    <span class="text-slate-500 text-[10px]">${new Date(log.timestamp).toLocaleTimeString()}</span>
-                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${levelColors[log.level]} bg-current/10">${log.level}</span>
-                </div>
-                <div class="text-slate-300 text-xs">${log.message}</div>
+        <div class="log-entry">
+            <span class="material-icons log-icon log-${log.level}">${iconMap[log.level]}</span>
+            <div class="log-content">
+                <div class="log-time">${new Date(log.timestamp).toLocaleTimeString()}</div>
+                <div class="log-message">${log.message}</div>
             </div>
         </div>
     `).join('');
-    
-    container.scrollTop = 0;
 }
 
 function filterLogs() {
@@ -1349,88 +1702,153 @@ function clearLogs() {
 }
 
 function showDocs() {
-    const docs = `
-# FrontendRAFT Documentation
+    const docs = `FrontendRAFT Documentation
 
-## What is RAFT?
+WHAT IS RAFT?
+RAFT (Reactive API for Frontend Transformation) extends REST with 5 superpowers:
+1. Streaming - Real-time data via async generators
+2. Smart Caching - Multi-level with TTL
+3. Auto-Batching - Groups parallel requests
+4. Optimistic Updates - Instant UI with rollback
+5. Query Language - GraphQL-like data fetching
 
-RAFT (Reactive API for Frontend Transformation) is a protocol that extends REST with 5 superpowers:
+QUICK START
 
-1. **Streaming** - Real-time data via async generators
-2. **Smart Caching** - Multi-level with TTL
-3. **Auto-Batching** - Groups parallel requests
-4. **Optimistic Updates** - Instant UI with rollback
-5. **Query Language** - GraphQL-like data fetching
+Level 1: No-Code
+- Click "New API" to create
+- Configure endpoints visually
+- Define data schema
+- Deploy with one click
 
-## Quick Start
+Level 2: Low-Code
+- Use visual builder
+- Switch to split view
+- Tweak generated code
+- Test and deploy
 
-### Level 1: No-Code
-1. Click "New API" to create
-2. Configure endpoints visually
-3. Define data schema
-4. Deploy with one click
+Level 3: Code
+- Write handlers directly
+- Full control over logic
+- Use RAFT features
+- Deploy to edge
 
-### Level 2: Low-Code
-1. Use visual builder
-2. Switch to split view
-3. Tweak generated code
-4. Test and deploy
+API FEATURES
 
-### Level 3: Code
-1. Write handlers directly
-2. Full control over logic
-3. Use RAFT features
-4. Deploy to edge
-
-## API Features
-
-### Storage
-\`\`\`javascript
+Storage:
 await RAFT.storage.save('key', data);
 const data = await RAFT.storage.get('key');
-\`\`\`
 
-### Caching
-\`\`\`javascript
-RAFT.cache.set('key', value, 60000); // 60s TTL
+Caching:
+RAFT.cache.set('key', value, 60000);
 const cached = RAFT.cache.get('key');
-\`\`\`
 
-### Query Language
-\`\`\`javascript
+Query Language:
 RAFT.query.execute(data, 'users.filter(age>18).select(name,email).limit(10)');
-\`\`\`
 
-## Deployment
-
+DEPLOYMENT
 Your API runs on the edge network with:
 - Global CDN distribution
 - Auto-scaling
-- $0 infrastructure cost
+- Zero infrastructure cost
 
-Based on CSOP: https://github.com/Nexus-Studio-CEO/CSOP
-    `.trim();
-    
+Based on CSOP: https://github.com/Nexus-Studio-CEO/CSOP`;
     alert(docs);
     RAFT.logger.log('info', 'Opened documentation');
 }
 
+function switchTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const tab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+    const view = document.getElementById(`${tabName}View`);
+    if (tab) tab.classList.add('active');
+    if (view) view.classList.add('active');
+    if (tabName === 'logs') updateLogsUI();
+}
+
+function switchLevel(level) {
+    RAFT.state.level = level;
+    document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.level-btn[data-level="${level}"]`).classList.add('active');
+    const visualBuilder = document.getElementById('visualBuilder');
+    const schemaBuilder = document.getElementById('schemaBuilder');
+    const codeEditor = document.getElementById('codeEditor');
+    
+    if (level === 1) {
+        visualBuilder.style.display = 'block';
+        schemaBuilder.style.display = 'block';
+        codeEditor.classList.remove('active');
+    } else if (level === 2) {
+        visualBuilder.style.display = 'block';
+        schemaBuilder.style.display = 'block';
+        codeEditor.classList.add('active');
+    } else if (level === 3) {
+        visualBuilder.style.display = 'none';
+        schemaBuilder.style.display = 'none';
+        codeEditor.classList.add('active');
+    }
+    RAFT.logger.log('info', `Switched to level ${level}`);
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     RAFT.init();
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'm' || e.key === 'M') {
-        toggleSidebar();
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+            const view = this.dataset.view;
+            if (view) switchTab(view);
+        });
+    });
+    
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            switchTab(this.dataset.tab);
+        });
+    });
+    
+    document.querySelectorAll('.level-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            switchLevel(parseInt(this.dataset.level));
+        });
+    });
+    
+    document.getElementById('overlay').addEventListener('click', toggleSidebar);
+    
+    const menuBtn = document.getElementById('menuBtn');
+    if (window.innerWidth <= 768) {
+        menuBtn.style.display = 'block';
     }
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        saveAPI();
-    }
-    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
-        e.preventDefault();
-        setView('deploy');
-    }
+    menuBtn.addEventListener('click', toggleSidebar);
+    
+    window.addEventListener('resize', () => {
+        if (window.innerWidth <= 768) {
+            menuBtn.style.display = 'block';
+        } else {
+            menuBtn.style.display = 'none';
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('overlay').classList.remove('active');
+        }
+    });
+    
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            saveAPI();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+            e.preventDefault();
+            switchTab('deploy');
+        }
+    });
 });
     </script>
 </body>
