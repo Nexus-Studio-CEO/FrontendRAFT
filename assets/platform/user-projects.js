@@ -24,23 +24,40 @@ class UserProjects {
      * Initialize IndexedDB
      */
     async init() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(this.dbName, 1);
+        try {
+            Logger.info('UserProjects: Initializing database...');
             
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => {
-                this.db = request.result;
-                Logger.info('UserProjects: Database initialized');
-                this._loadProjects().then(resolve);
-            };
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(this.dbName, 1);
+                
+                request.onerror = () => {
+                    Logger.error('UserProjects: Database failed to open');
+                    reject(request.error);
+                };
+                
+                request.onsuccess = () => {
+                    this.db = request.result;
+                    Logger.success('UserProjects: Database opened successfully');
+                    this._loadProjects().then(() => {
+                        Logger.success('UserProjects: Projects loaded');
+                        resolve();
+                    }).catch(reject);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    Logger.info('UserProjects: Creating database structure');
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(this.storeName)) {
+                        db.createObjectStore(this.storeName, { keyPath: 'id' });
+                        Logger.info('UserProjects: Object store created');
+                    }
+                };
+            });
             
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                if (!db.objectStoreNames.contains(this.storeName)) {
-                    db.createObjectStore(this.storeName, { keyPath: 'id' });
-                }
-            };
-        });
+        } catch (error) {
+            Logger.error(`UserProjects: Init failed - ${error.message}`);
+            throw error;
+        }
     }
 
     /**
@@ -288,25 +305,44 @@ class UserProjects {
     // Private methods
 
     async _loadProjects() {
-        if (!this.db) return;
+        if (!this.db) {
+            Logger.warn('UserProjects: Database not initialized, skipping load');
+            return;
+        }
         
         return new Promise((resolve, reject) => {
-            const transaction = this.db.transaction([this.storeName], 'readonly');
-            const store = transaction.objectStore(this.storeName);
-            const request = store.getAll();
-            
-            request.onsuccess = () => {
-                const projects = request.result || [];
-                projects.forEach(project => {
-                    this.projects.set(project.id, project);
-                });
+            try {
+                const transaction = this.db.transaction([this.storeName], 'readonly');
+                const store = transaction.objectStore(this.storeName);
+                const request = store.getAll();
                 
-                Logger.info(`UserProjects: Loaded ${projects.length} projects`);
-                this._updateUI();
-                resolve();
-            };
-            
-            request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    const projects = request.result || [];
+                    projects.forEach(project => {
+                        this.projects.set(project.id, project);
+                    });
+                    
+                    Logger.info(`UserProjects: Loaded ${projects.length} project(s)`);
+                    
+                    // Select first project if none selected
+                    if (projects.length > 0 && !this.currentProject) {
+                        this.currentProject = projects[0];
+                        Logger.info(`UserProjects: Auto-selected "${this.currentProject.name}"`);
+                    }
+                    
+                    this._updateUI();
+                    resolve();
+                };
+                
+                request.onerror = () => {
+                    Logger.error('UserProjects: Failed to load projects');
+                    reject(request.error);
+                };
+                
+            } catch (error) {
+                Logger.error(`UserProjects: Load error - ${error.message}`);
+                reject(error);
+            }
         });
     }
 
