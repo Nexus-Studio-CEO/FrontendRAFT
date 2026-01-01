@@ -21,18 +21,29 @@ class APIBuilder {
      * Initialize builder
      */
     async init() {
-        await UserProjects.init();
-        
-        // Load current project or create default
-        if (UserProjects.currentProject) {
-            this.endpoints = UserProjects.currentProject.endpoints || [];
-        } else {
-            await UserProjects.create({ name: 'My First API' });
-            this.endpoints = [];
+        try {
+            Logger.info('APIBuilder: Starting initialization');
+            
+            await UserProjects.init();
+            Logger.info('APIBuilder: UserProjects initialized');
+            
+            // Load current project or create default
+            if (UserProjects.currentProject) {
+                this.endpoints = UserProjects.currentProject.endpoints || [];
+                Logger.info(`APIBuilder: Loaded project "${UserProjects.currentProject.name}"`);
+            } else {
+                Logger.info('APIBuilder: Creating default project');
+                await UserProjects.create({ name: 'My First API' });
+                this.endpoints = [];
+            }
+            
+            this.renderEndpoints();
+            Logger.success('APIBuilder: Initialized successfully');
+            
+        } catch (error) {
+            Logger.error(`APIBuilder: Initialization failed - ${error.message}`);
+            throw error;
         }
-        
-        this.renderEndpoints();
-        Logger.info('APIBuilder: Initialized');
     }
 
     /**
