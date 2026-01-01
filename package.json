@@ -1,0 +1,66 @@
+{
+  "name": "frontendraft",
+  "version": "0.1.0",
+  "description": "Reactive API for Frontend Transformation - Build and deploy decentralized APIs directly from your browser",
+  "main": "index.html",
+  "keywords": [
+    "api",
+    "raft",
+    "frontend",
+    "browser",
+    "decentralized",
+    "p2p",
+    "webrtc",
+    "indexeddb",
+    "streaming",
+    "caching",
+    "csop",
+    "no-code",
+    "low-code"
+  ],
+  "author": {
+    "name": "DAOUDA Abdoul Anzize",
+    "email": "nexusstudio100@gmail.com",
+    "company": "Nexus Studio"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nexus-Studio-CEO/FrontendRAFT/issues"
+  },
+  "homepage": "https://github.com/Nexus-Studio-CEO/FrontendRAFT#readme",
+  "scripts": {
+    "serve": "npx live-server",
+    "dev": "npx live-server --port=8080",
+    "lint": "echo 'No linting configured yet'",
+    "test": "echo 'No tests configured yet'"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "Chrome >= 90",
+    "Firefox >= 88",
+    "Safari >= 14",
+    "Edge >= 90"
+  ],
+  "metadata": {
+    "protocol": "RAFT v0.1.0",
+    "basedOn": "CSOP (https://github.com/Nexus-Studio-CEO/CSOP)",
+    "features": [
+      "streaming",
+      "caching",
+      "batching",
+      "optimistic-updates",
+      "query-language"
+    ],
+    "architecture": "browser-first",
+    "infrastructure": "zero-cost",
+    "deployment": "decentralized-cdn"
+  }
+}
